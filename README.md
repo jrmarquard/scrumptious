@@ -9,6 +9,7 @@
 ### Setting up the project with Firebase
 - Install [Node.js](https://nodejs.org/en/). This will also install npm.
 - Install firebase-tools with npm: `npm install -g firebase-tools`.
+- Firebase should now be installed. Run `firebase login` to login to Firebase and follow the prompts.
 - Clone this repository.
 - With Firebase is installed, you just need to run `firebase [options] [command]` in the root folder of this repository to use the firebase tools. I think.
 
