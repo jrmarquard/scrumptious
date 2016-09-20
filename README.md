@@ -17,6 +17,7 @@
 - `.firebaserc` is used by Firebase to assign aliases to your projects. The release website alias is `scrumptious-release`.
 - `firebase.json` defines rules for Firebase used when running `firebase deploy` and `firebase serve`. Read more [here](https://www.firebase.com/docs/hosting/guide/full-config.html).
 - `database.rules.json` outlines the database rules used by Firebase, used to assign rules to the databse. When `firebase deploy` is run, it will overwrite the rules currently deployed rules - be careful.
+- `/public` contains all the files to be deployed.
 
 ### Firebase Deployment and Serving
 Read more [here](https://www.firebase.com/docs/hosting/command-line-tool.html).
