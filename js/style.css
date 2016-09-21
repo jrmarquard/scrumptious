@@ -3,13 +3,17 @@ body, div {
     margin: 0px;
 }
 
-
 body {
     font-family: Roboto, Arial, sans-serif;
     background: #ECEFF1;
     color: rgba(0,0,0,0.87);
 }
 
+div#app {
+    max-width: 1000px;
+    background: #CCCFD1;
+    margin: auto;
+}
 
 a {
     color: rgb(3,155,229);
@@ -20,14 +24,15 @@ nav {
 
 nav div {
     display: inline-block;
-    padding: 10px 10px;
-    margin: 20px 20px;
+    padding: 8px 8px;
+    margin: 8px 10px;
     background-color: #FFF;
 }
 
 nav ul li.active {
     border: 1px solid black;
 }
+
 
 div.ticket {
     max-width: 400px;
@@ -36,6 +41,10 @@ div.ticket {
     border-radius: 2px;
     background: white;
     padding: 16px 24px;
+}
+
+div.ticket > * {
+    display: block;
 }
 
 #authform {

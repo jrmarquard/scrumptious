@@ -4,59 +4,63 @@ import firebase from 'firebase';
 export default class EditableTextView extends React.Component {
     constructor(props) {
         super();
-        this.props = props;
+
+        this.ticketField = props.field;
+        this.ticketKey = props.ticketKey;
 
         this.state = {
-            inEditMode : false,
-            value : '',
-        };
-    }
-
-    updateTicket = (ticket) => {
-        if (!ticket) return;
-        this.setState({value: ticket[this.props.field]});
+            editing : false,
+            value : props.value,
+        }
     }
 
     componentWillMount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).on('value', (data) => this.updateTicket(data.val()));
     }
 
     componentWillUnmount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).off('value', (data) => this.updateTicket(data.val()));
     }
 
-    componentDidUpdate() {
-        if (this.state.inEditMode) this.refs.valueInput.focus();
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.editing) {
+            this.refs.valueInput.focus();
+            this.refs.valueInput.select();
+        }
 
         var data = {};
-        data[this.props.field] = this.state.value;
-        firebase.updateTicket(this.props.ticketKey, data);
+        data[this.ticketField] = this.state.value;
+        firebase.updateTicket(this.ticketKey, data);
     }
 
-    stopEditing() {
-        this.setState({inEditMode: false});
+    startEditing = () => {
+        this.setState({editing:true});
+    }
+
+    stopEditing = () => {
+        this.setState({editing:false});
     }
 
     render() {
-        if (this.state.inEditMode) {
-            // Focus input on the textfield
-            return(
-                <input ref="valueInput" type="text" value={this.state.value}
+        if (this.state.editing) {
+            return (
+                <input
+                    type = "text"
+                    ref = "valueInput"
                     onChange={(e) => {
-                        this.setState({value:e.target.value});
+                        this.setState( {value : e.target.value} );
                     }}
                     onBlur={() => {
                         this.stopEditing();
                     }}
                     onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.stopEditing();
-                    }}/>
+                    }}
+                    defaultValue={this.state.value}
+                    autofocus
+                />
             );
         } else {
-            return(
-                <h3 onClick={() => {
-                    this.setState({inEditMode: true})
-                }}>{this.state.value}</h3>
+            return (
+                <h3 onDoubleClick={() => this.startEditing()}>{this.state.value}</h3>
             );
         }
     }

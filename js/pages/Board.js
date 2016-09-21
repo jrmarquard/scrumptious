@@ -22,7 +22,7 @@ export default class Board extends React.Component {
         firebase.tickets.on('child_removed', (data) => this.removeTicket(data.key, data.val()));
 
         // Watches for updates of tickets
-        // firebase.tickets.on('child_changed', (data) => this.updateTicket(data.key, data.val()));
+        firebase.tickets.on('value', (data) => this.updateTicket(data.key, data.val()));
     }
 
     componentWillUnmount() {
@@ -37,8 +37,8 @@ export default class Board extends React.Component {
     updateTicket = (key, payload) => {
         console.log('_________ UPDATING TICKET _________')
         console.log(payload);
-        this.tickets[key] = payload;
-        this.setState( {tickets : this.tickets } );
+        //this.tickets[key] = payload;
+        //this.setState( {tickets : this.tickets } );
     }
 
     displayTicket = (key, payload) => {

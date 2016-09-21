@@ -9,8 +9,6 @@ var config = {
 firebase.initializeApp(config);
 firebase.tickets = firebase.database().ref('tickets');
 
-
-
 firebase.createTicket = (payload) => {
     firebase.tickets.push({
         title: payload.title,
