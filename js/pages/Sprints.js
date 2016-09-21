@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router";
+import firebase from 'firebase';
 
 import Ticket from "../components/Ticket.js";
 
@@ -15,6 +16,7 @@ export default class Sprints extends React.Component {
     componentWillMount() {
         firebase.tickets.once("value").then((snapshot) => {
             var keySnapshot = snapshot.child("-KS4s4ETBTmvz3JmqQ4R");
+            console.log(keySnapshot, keySnapshot.val());
             this.setState( {ticket :  keySnapshot.val() } );;
 
         });

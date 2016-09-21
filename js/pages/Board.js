@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router";
+import firebase from 'firebase';
 
 import Ticket from "../components/Ticket.js";
 
@@ -14,12 +15,12 @@ export default class Board extends React.Component {
 
     // When component is rendered to the DOM for the first time, and first time only
     componentWillMount() {
-        firebase.tickets.on("child_added",  (data) => {
+        var callback = (data) => {
             this.displayTicket(data.key, data.val());
-        });
-        firebase.tickets.on("child_removed",  (data) => {
-            this.undisplayTicket(data.key, data.val());
-        });
+        };
+        firebase.tickets.on("child_added",  callback);
+        firebase.tickets.on("child_removed",  callback);
+        firebase.tickets.on('child_changed', callback);
     }
 
     componentWillUnmount() {

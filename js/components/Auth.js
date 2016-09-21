@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 
 export default class Auth extends React.Component {
 
@@ -26,11 +27,9 @@ export default class Auth extends React.Component {
     authObserver = (user) => {
         if (user) {
             if (!user.emailVerified) {
-                this.setState({statusMessage: "signed out"});
-                this.signOut();
-            } else {
-                this.setState({statusMessage: "signed in"});
+                user.sendEmailVerification();
             }
+            this.setState({statusMessage: "signed in"});
         } else {
             this.setState({statusMessage: "not signed in"});
         }
