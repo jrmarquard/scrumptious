@@ -1,25 +1,21 @@
 import React from 'react';
 import firebase from 'firebase';
+import EditableTextView from './EditableTextView.js';
 
 export default class Ticket extends React.Component {
-    constructor(props) {
-        super();
-        console.log(props);
-    }
-
     deleteTicket = () => {
-        firebase.deleteTicket(this.key);
+        firebase.deleteTicket(this.props.ticket.key);
     }
 
     render() {
         const {key,title,description,state,priority} = this.props.ticket;
-        this.key = key;
         return(
             <div class="ticket" id={key}>
-                <h3>{title}</h3>
-                <h4>{state} / {priority}</h4>
-                <p>{description}</p>
-                <button onClick={() => {firebase.deleteTicket(key);}}>Delete</button>
+                <EditableTextView field="title" ticketKey={key} />
+                <EditableTextView field="state" ticketKey={key} />
+                <EditableTextView field="priority" ticketKey={key} />
+                <EditableTextView field="description" ticketKey={key} />
+                <button onClick={this.deleteTicket}>Delete</button>
             </div>
         );
     }

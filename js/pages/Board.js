@@ -57,7 +57,7 @@ export default class Board extends React.Component {
     }
 
     render() {
-        const TicketComponents = [];
+        var TicketComponents = [];
         // loop over all the key/values
         for (var key in this.state.tickets) {
             // push oonto TIcketComponents

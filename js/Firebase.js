@@ -20,6 +20,10 @@ firebase.createTicket = (payload) => {
     });
 }
 
+firebase.updateTicket = (key, ticket) => {
+    firebase.database().ref("tickets/"+key).update(ticket);
+}
+
 firebase.deleteTicket = (key) => {
     firebase.tickets.child(key).remove();
 }
