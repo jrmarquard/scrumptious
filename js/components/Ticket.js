@@ -11,10 +11,10 @@ export default class Ticket extends React.Component {
         const {key,title,description,state,priority} = this.props.ticket;
         return(
             <div class="ticket" id={key}>
-                <EditableTextView field="title" ticketKey={key} />
-                <EditableTextView field="state" ticketKey={key} />
-                <EditableTextView field="priority" ticketKey={key} />
-                <EditableTextView field="description" ticketKey={key} />
+                <EditableTextView value={title} field="title" ticketKey={key} />
+                <EditableTextView value={state} field="state" ticketKey={key} />
+                <EditableTextView value={priority} field="priority" ticketKey={key} />
+                <EditableTextView value={description} field="description" ticketKey={key} />
                 <button onClick={this.deleteTicket}>Delete</button>
             </div>
         );

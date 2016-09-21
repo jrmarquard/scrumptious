@@ -4,28 +4,30 @@ import firebase from 'firebase';
 export default class EditableTextView extends React.Component {
     constructor(props) {
         super();
+        this.props = props;
+
         this.state = {
-            inEditMode: false,
+            inEditMode : false,
+            value : '',
         };
     }
 
-    updateTicket = (data) => {
-        const ticket = data.val();
+    updateTicket = (ticket) => {
+        if (!ticket) return;
         this.setState({value: ticket[this.props.field]});
     }
 
     componentWillMount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).on('value', this.updateTicket);
+        firebase.database().ref("tickets/"+this.props.ticketKey).on('value', (data) => this.updateTicket(data.val()));
     }
 
     componentWillUnmount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).off('value', this.updateTicket);
+        firebase.database().ref("tickets/"+this.props.ticketKey).off('value', (data) => this.updateTicket(data.val()));
     }
 
     componentDidUpdate() {
-        if (this.refs.valueInput) {
-            this.refs.valueInput.focus();
-        }
+        if (this.state.inEditMode) this.refs.valueInput.focus();
+
         var data = {};
         data[this.props.field] = this.state.value;
         firebase.updateTicket(this.props.ticketKey, data);
@@ -36,12 +38,12 @@ export default class EditableTextView extends React.Component {
     }
 
     render() {
-        // const {ticketKey,title,description,state,priority} = this.state;
         if (this.state.inEditMode) {
+            // Focus input on the textfield
             return(
                 <input ref="valueInput" type="text" value={this.state.value}
                     onChange={(e) => {
-                        this.setState({value: e.target.value});
+                        this.setState({value:e.target.value});
                     }}
                     onBlur={() => {
                         this.stopEditing();
