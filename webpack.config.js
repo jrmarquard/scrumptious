@@ -1,10 +1,9 @@
-var production = false;
+var production = process.env.PRODUCTION || false;
+console.log('Running webpack for ' + (production ? 'production' : 'dev'));
+
 var webpack = require('webpack');
-var path = require('path');
 
 module.exports = {
-    // path.join() used so webpack --watch runs correctly on Windows
-    // context: path.join(__dirname, "/public"),
     context: __dirname,
     // If debuging, use inline-sourcemap whichw ill add a SourceMap as DataUrl to the js filew
     devtool: !production ? "inline-sourcemap" : null,
@@ -27,7 +26,6 @@ module.exports = {
             }, {
                 test: /\.s?css$/,
                 loaders: ['style', 'css', 'sass'],
-                //include: path.join(__dirname, 'src')
             }
         ]
     },

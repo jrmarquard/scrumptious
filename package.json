@@ -28,6 +28,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "deploy": "PRODUCTION=true webpack && firebase use scrumptious-a4bc9 && firebase deploy",
     "dev": "webpack-dev-server --content-base public --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
