@@ -22,7 +22,7 @@ export default class Board extends React.Component {
         firebase.tickets.on('child_removed', (data) => this.removeTicket(data.key, data.val()));
 
         // Watches for updates of tickets
-        firebase.tickets.on('value', (data) => this.updateTicket(data.key, data.val()));
+        // firebase.tickets.on('value', (data) => this.updateTicket(data.key, data.val()));
     }
 
     componentWillUnmount() {

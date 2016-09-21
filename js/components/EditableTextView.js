@@ -12,6 +12,7 @@ export default class EditableTextView extends React.Component {
             editing : false,
             value : props.value,
         }
+        this.selectOnChange = true;
     }
 
     componentWillMount() {
@@ -23,7 +24,10 @@ export default class EditableTextView extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.editing) {
             this.refs.valueInput.focus();
-            this.refs.valueInput.select();
+            if (this.selectOnChange) {
+                this.refs.valueInput.select();
+                this.selectOnChange = false;
+            }
         }
 
         var data = {};
@@ -36,6 +40,7 @@ export default class EditableTextView extends React.Component {
     }
 
     stopEditing = () => {
+        this.selectOnChange = true;
         this.setState({editing:false});
     }
 
