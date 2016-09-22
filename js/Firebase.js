@@ -9,6 +9,24 @@ var config = {
 firebase.initializeApp(config);
 firebase.tickets = firebase.database().ref('tickets');
 
+firebase.addCurrentUser = () => {
+    var currentUserID = firebase.auth().currentUser.uid;
+    firebase.database().ref('users/' + currentUserID)
+    .set({
+        name: 'Scrumdiddlyumptious 2',
+    })
+    .then(() => {
+        console.log("User added");
+    })
+    .catch((error) => {
+        console.log("User add failed." + error.message);
+    });
+}
+firebase.addTicket = () => {
+
+}
+
+
 firebase.createTicket = (payload) => {
     firebase.tickets.push({
         title: payload.title,

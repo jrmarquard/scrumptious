@@ -24,10 +24,13 @@ export default class Auth extends React.Component {
     // Called when auth state is changed
     authObserver = (user) => {
         if (user) {
+            // Only allow the user to sign in once their email is verified
             if (!user.emailVerified) {
                 user.sendEmailVerification();
+                this.signOut();
+            } else {
+                this.setState({signedin : true});
             }
-            this.setState({signedin : true});
         } else {
             this.setState({signedin : false});
         }
@@ -40,6 +43,7 @@ export default class Auth extends React.Component {
         .then(function(user) {
             // When creating a user for the first time, send them an email veritication.
             user.sendEmailVerification();
+            firebase.addCurrentUser();
         })
         .catch(function(error) {
             console.log('ERROR: ' + error.code + ': ' + error.message);
@@ -69,8 +73,7 @@ export default class Auth extends React.Component {
 
     // Signs the current user out
     signOut = () => {
-        firebase.auth().signOut()
-        .catch((e) => console.log(e));
+        firebase.auth().signOut();
     };
 
     render() {

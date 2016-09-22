@@ -17,6 +17,7 @@ import Interface from "./pages/Interface.js";
 import Settings from "./pages/Settings.js";
 import Sprints from "./pages/Sprints.js";
 import Stories from "./pages/Stories.js";
+import User from "./pages/User.js";
 
 // Scrumptious
 class Scrumptious extends React.Component {
@@ -30,6 +31,7 @@ class Scrumptious extends React.Component {
                     <Route path="stories" component={Stories} />
                     <Route path="about" component={About} />
                     <Route path="settings" component={Settings} />
+                    <Route path="user" component={User} />
                 </Route>
             </Router>
         );
