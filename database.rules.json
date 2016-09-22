@@ -1,6 +1,43 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        ".validate": "newData.hasChild('name')"
+      }
+    },
+    "tickets": {
+      "$ticketId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['assignee', 'author', 'title'])",
+        "assignee": {
+          ".validate": "root.child('users').child(newData.val()).exists()"
+        },
+        "author": {
+          ".validate": "newData.val() === auth.uid"
+        }
+      }
+    },
+    "sprints": {
+      "$sprintId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChild('title')"
+      }
+    },
+    "sprint-tickets": {
+      "$sprintId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "root.child('sprints').child($sprintId).exists()",
+        "$ticketId": {
+          ".read": "auth != null",
+          ".write": "auth != null",
+          ".validate": "root.child('tickets').child($ticketId).exists()"
+        }
+      }
+    }
   }
 }
