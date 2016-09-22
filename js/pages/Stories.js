@@ -6,6 +6,12 @@ export default class Stories extends React.Component {
         return (
             <div>
                 <h1>Stories</h1>
+
+                {/* Create new stories here */}
+
+
+                {/* Display new stories here */}
+
             </div>
         );
     }

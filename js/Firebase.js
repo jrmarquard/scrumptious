@@ -9,8 +9,6 @@ var config = {
 firebase.initializeApp(config);
 firebase.tickets = firebase.database().ref('tickets');
 
-
-
 firebase.createTicket = (payload) => {
     firebase.tickets.push({
         title: payload.title,
@@ -20,8 +18,8 @@ firebase.createTicket = (payload) => {
     });
 }
 
-firebase.updateTicket = (key, ticket) => {
-    firebase.database().ref("tickets/"+key).update(ticket);
+firebase.updateTicket = (key, data) => {
+    firebase.database().ref("tickets/"+key).update(data);
 }
 
 firebase.deleteTicket = (key) => {

@@ -4,57 +4,68 @@ import firebase from 'firebase';
 export default class EditableTextView extends React.Component {
     constructor(props) {
         super();
-        this.state = {
-            inEditMode: false,
-        };
-    }
 
-    updateTicket = (data) => {
-        const ticket = data.val();
-        this.setState({value: ticket[this.props.field]});
+        this.ticketField = props.field;
+        this.ticketKey = props.ticketKey;
+
+        this.state = {
+            editing : false,
+            value : props.value,
+        }
+        this.selectOnChange = true;
     }
 
     componentWillMount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).on('value', this.updateTicket);
     }
 
     componentWillUnmount() {
-        firebase.database().ref("tickets/"+this.props.ticketKey).off('value', this.updateTicket);
     }
 
-    componentDidUpdate() {
-        if (this.refs.valueInput) {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.editing) {
             this.refs.valueInput.focus();
+            if (this.selectOnChange) {
+                this.refs.valueInput.select();
+                this.selectOnChange = false;
+            }
         }
+
         var data = {};
-        data[this.props.field] = this.state.value;
-        firebase.updateTicket(this.props.ticketKey, data);
+        data[this.ticketField] = this.state.value;
+        firebase.updateTicket(this.ticketKey, data);
     }
 
-    stopEditing() {
-        this.setState({inEditMode: false});
+    startEditing = () => {
+        this.setState({editing:true});
+    }
+
+    stopEditing = () => {
+        this.selectOnChange = true;
+        this.setState({editing:false});
     }
 
     render() {
-        // const {ticketKey,title,description,state,priority} = this.state;
-        if (this.state.inEditMode) {
-            return(
-                <input ref="valueInput" type="text" value={this.state.value}
+        if (this.state.editing) {
+            return (
+                <input
+                    type = "text"
+                    ref = "valueInput"
                     onChange={(e) => {
-                        this.setState({value: e.target.value});
+                        this.setState( {value : e.target.value} );
                     }}
                     onBlur={() => {
                         this.stopEditing();
                     }}
                     onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.stopEditing();
-                    }}/>
+                    }}
+                    defaultValue={this.state.value}
+                    autofocus
+                />
             );
         } else {
-            return(
-                <h3 onClick={() => {
-                    this.setState({inEditMode: true})
-                }}>{this.state.value}</h3>
+            return (
+                <h3 onDoubleClick={() => this.startEditing()}>{this.state.value}</h3>
             );
         }
     }

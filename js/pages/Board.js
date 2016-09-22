@@ -15,22 +15,32 @@ export default class Board extends React.Component {
 
     // When component is rendered to the DOM for the first time, and first time only
     componentWillMount() {
-        var callback = (data) => {
-            this.displayTicket(data.key, data.val());
-        };
-        firebase.tickets.on("child_added",  callback);
-        firebase.tickets.on("child_removed",  callback);
-        firebase.tickets.on('child_changed', callback);
+        // Watches for additions to tickets
+        firebase.tickets.on('child_added', (data) => this.displayTicket(data.key, data.val()));
+
+        // Wathces for removal of tickets
+        firebase.tickets.on('child_removed', (data) => this.removeTicket(data.key, data.val()));
+
+        // Watches for updates of tickets
+        // firebase.tickets.on('value', (data) => this.updateTicket(data.key, data.val()));
     }
 
     componentWillUnmount() {
         firebase.tickets.off();
     }
 
-    undisplayTicket = (key, payload) => {
+    removeTicket = (key, payload) => {
         delete this.tickets[key];
         this.setState( {tickets : this.tickets } );
     }
+
+    updateTicket = (key, payload) => {
+        console.log('_________ UPDATING TICKET _________')
+        console.log(payload);
+        //this.tickets[key] = payload;
+        //this.setState( {tickets : this.tickets } );
+    }
+
     displayTicket = (key, payload) => {
         if (payload == null) return;
 
