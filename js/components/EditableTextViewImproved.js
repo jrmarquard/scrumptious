@@ -7,6 +7,7 @@ import firebase from 'firebase';
  *
  */
 export default class EditableTextViewImproved extends React.Component {
+    // Required props for this Component
     static propTypes = {
         value: React.PropTypes.any.isRequired,
         onChange: React.PropTypes.func.isRequired,

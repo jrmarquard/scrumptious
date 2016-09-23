@@ -26,8 +26,7 @@ export default class User extends React.Component {
     updateField = (field, value) => {
         var currentUserID = firebase.auth().currentUser.uid;
         firebase.database().ref('users/'+currentUserID).child(field).set(value)
-        .then(() => console.log('Changed ' + field + ' to ' + value + '.'))
-        .catch(() => console.log('Could not change ' + field + ' to ' + value + '.'));
+        .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
     }
 
     render() {

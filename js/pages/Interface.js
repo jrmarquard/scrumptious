@@ -9,8 +9,8 @@ export default class Interface extends React.Component {
     constructor() {
         super();
         this.state = {
-            loading : true,
-            loggedin : false };
+            loggedin : false
+        };
     }
 
     componentWillMount() {
@@ -29,7 +29,6 @@ export default class Interface extends React.Component {
         } else {
             this.setState({loggedin : false });
         }
-        this.setState({loading : false});
     }
 
     render() {
@@ -37,15 +36,11 @@ export default class Interface extends React.Component {
             return (
                 <div>
                     <Nav loggedin={this.state.loggedin}/>
-                    {this.props.children}
+                    <div id='content'>
+                        {this.props.children}
+                    </div>
                 </div>
             );
-        } else if (this.state.loading) {
-            return (
-                <div>
-                    <h1>Loading</h1>
-                </div>
-            )
         } else {
             return (
                 <div>

@@ -9,6 +9,11 @@ var config = {
 firebase.initializeApp(config);
 firebase.tickets = firebase.database().ref('tickets');
 
+// Get the currently logged in users id
+firebase.getCurrentUser = () => {
+    return firebase.auth().currentUser;
+}
+
 firebase.addCurrentUser = () => {
     var currentUserID = firebase.auth().currentUser.uid;
     firebase.database().ref('users/' + currentUserID)

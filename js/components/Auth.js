@@ -38,11 +38,12 @@ export default class Auth extends React.Component {
 
     // Signs the user up and sends them an email verification if successful.
     signUp = () => {
-        // Sign in with email and pass.
+        // Create a user with email and pass.
         firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(function(user) {
-            // When creating a user for the first time, send them an email veritication.
+            // Send them an email veritication.
             user.sendEmailVerification();
+            // Add them to the database
             firebase.addCurrentUser();
         })
         .catch(function(error) {
