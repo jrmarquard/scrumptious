@@ -16,11 +16,6 @@ export default class Home extends React.Component {
     }
 
     componentDidMount() {
-        // Watches for project changes
-        firebase.onProjectChange((projectID) => {
-            console.log(projectID);
-        });
-
 
         // Watches for projects in userID/projects/ 
         this.userProjects = firebase.database().ref('users/'+firebase.getCurrentUser().uid+'/projects');
@@ -42,15 +37,18 @@ export default class Home extends React.Component {
                 this.refreshProjects();
             });
         });
-        // this.userProjects.on('child_removed', (data) => {
-        //     console.log(this.state.projects);
-        // });
 
+        // Watches for deleted projects
         this.userProjects.on('child_removed', (data) => {
-            //console.log()
             delete this.projectsList[data.key];
             this.refreshProjects();
         });
+        
+        // Watches for project changes
+        this.index = firebase.subscribe('project_change', (projectID) => {
+            console.log(projectID);
+        });
+
     }
 
     componentWillUnmount() {
@@ -65,8 +63,6 @@ export default class Home extends React.Component {
     refreshProjects = () => {
         var projects = Object.keys(this.projectsList).map(key => this.projectsList[key]);
         this.setState({projects : projects});
-        console.log(this.state.projects);
-        console.log('test');
     }
 
     render() {
@@ -80,6 +76,9 @@ export default class Home extends React.Component {
                     placeholder="Project Name"
                 />
                 <button onClick={this.createProject}>Create</button>
+                <button onClick={() => {
+                    firebase.unsubscribe('project_change', this.index);
+                }}>Unsubscribe</button>
                 <ul>{this.state.projects}</ul>
             </div>
         );

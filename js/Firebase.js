@@ -107,7 +107,6 @@ firebase.deleteProject = (projectID) => {
         // For each of the users' IDs remove the project id from userID/projects
         users.forEach((userID) => {
             var promise = firebase.database().ref('users/'+userID+'/projects/'+projectID).remove()
-            .then(() => console.log('successfully deleted'))
             .catch(() => console.log('not deleted'));
         })
     })
@@ -175,10 +174,19 @@ firebase.projectChangeSubscribers = new Array;
 firebase.changeProject = (projectID) => {
     var projectID = projectID;
     firebase.projectChangeSubscribers.forEach((f) => {
-        f(projectID);
+        if (f !== null) f(projectID);
     });
 }
 
-firebase.onProjectChange = (f) => {
-    firebase.projectChangeSubscribers.push(f);
+firebase.subscribe = (event, f) => {
+    if (event === 'project_change') {
+        return firebase.projectChangeSubscribers.push(f) - 1;
+    } else {
+        return null;
+    }
+}
+firebase.unsubscribe = (event, i) => {
+    if (event === 'project_change') {
+        firebase.projectChangeSubscribers[i] = null;
+    }
 }
