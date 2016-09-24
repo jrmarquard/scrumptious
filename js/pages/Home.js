@@ -1,62 +1,72 @@
 import React from 'react';
+import firebase from 'firebase';
 
-import Auth from '../components/Auth.js'
+import Auth from '../components/Auth.js';
 
 export default class Home extends React.Component {
 
     constructor() {
         super();
+        this.projectsList = {}
+
         this.state = {
             projectName : '',
             projects : [],
         }
     }
 
-    componentWillMount() {
-        // Watches for projects
-        this.reference = firebase.database().ref('users/'+firebase.getCurrentUser().uid+'/projects');
-        this.reference.on('child_added', (data) => {
+    componentDidMount() {
+        // Watches for project changes
+        firebase.onProjectChange((projectID) => {
+            console.log(projectID);
+        });
 
-            var userProjectReference = data.val();
-            var projectID = userProjectReference.projectID;
-            var role = userProjectReference.role;
 
-            firebase.database().ref('projects/'+projectID).once('value', (data) => {
-                var projects = this.state.projects;
-                projects.push(<li key={data.key}>{data.val().title}</li>);
-                this.setState({projects : projects});
+        // Watches for projects in userID/projects/ 
+        this.userProjects = firebase.database().ref('users/'+firebase.getCurrentUser().uid+'/projects');
+        
+        this.userProjects.on('child_added', (data) => {
+            // Find the project in /projects
+            firebase.database().ref('projects/'+data.key).once('value')
+            .then((data) => {
+                
+                this.projectsList[data.key] = 
+                (<li 
+                    key={data.key}
+                    onClick={() => firebase.changeProject(data.key)}
+                    >
+                    {data.val().title}
+                    <button onClick={()=>{firebase.deleteProject(data.key)}} >Delete</button>
+                </li>);
+                
+                this.refreshProjects();
             });
+        });
+        // this.userProjects.on('child_removed', (data) => {
+        //     console.log(this.state.projects);
+        // });
+
+        this.userProjects.on('child_removed', (data) => {
+            //console.log()
+            delete this.projectsList[data.key];
+            this.refreshProjects();
         });
     }
 
     componentWillUnmount() {
-        this.reference.off();
+        this.userProjects.off();
     }
 
     createProject = () => {
-        var userID = firebase.getCurrentUser().uid;
-        firebase.database().ref('projects').push({
-            title: this.state.projectName,
-            owner: userID,
-        })
-        .then((data) => {
-            var userID = firebase.getCurrentUser().uid;
-            var projectID = data.getKey();
-
-            return firebase.database().ref('users/' + userID + '/projects')
-            .push({
-                projectID : projectID,
-                role : 'owner'
-            });
-        })
-        .then((data) => {
-            console.log('Created new project');
-        })
-        .catch((data) => {
-            console.log('Failed to create new project');
-            console.log(data);
-        });
+        firebase.createProject(firebase.getCurrentUser().uid, this.state.projectName);
         this.setState({projectName : ''});
+    }
+
+    refreshProjects = () => {
+        var projects = Object.keys(this.projectsList).map(key => this.projectsList[key]);
+        this.setState({projects : projects});
+        console.log(this.state.projects);
+        console.log('test');
     }
 
     render() {
@@ -71,7 +81,6 @@ export default class Home extends React.Component {
                 />
                 <button onClick={this.createProject}>Create</button>
                 <ul>{this.state.projects}</ul>
-
             </div>
         );
     }
