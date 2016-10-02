@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp">
+
+            <View
+                android:id="@+id/profile_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/grey_circle"/>
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/profile_image"
+                android:layout_toLeftOf="@+id/points"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:typeface="roboto_medium"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Design UI for Android App" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="12dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:background="@drawable/grey_rounded_rectangle"
+                app:typeface="roboto_medium"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                tools:text="3" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/assignee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/profile_image"
+                android:layout_below="@id/title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                app:typeface="roboto_medium"
+                android:textSize="14sp"
+                android:textColor="#666"
+                tools:text="Aaron Darling" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_marginTop="16dp"
+                android:textSize="14sp"
+                android:textColor="#000"
+                android:lineSpacingExtra="5sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="Make some wireframes and mockups for all the screens in the Android App." />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
