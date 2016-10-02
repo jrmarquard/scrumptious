@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "111747046150",
+    "firebase_url": "https://scrumptious-a4bc9.firebaseio.com",
+    "project_id": "scrumptious-a4bc9",
+    "storage_bucket": "scrumptious-a4bc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111747046150:android:1784ea76072ef648",
+        "android_client_info": {
+          "package_name": "us.crumptio.scrumptious"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "111747046150-pfcedorke1gr37go1rm4700t8hg1shr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5tlyzWjXjeKdxibiZKD-oe9Qw5T9fWvU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
