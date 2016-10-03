@@ -1,27 +1,26 @@
 import React from 'react';
-import firebase from 'firebase';
 
-export default class EditableTextView extends React.Component {
-    constructor(props) {
+/*
+ *  Text field that can be edited on double click, and when
+ *  the value changes it calls the function provided in props.onChange
+ */
+export default class EditableTextViewImproved extends React.Component {
+    // Required props for this Component
+    static propTypes = {
+        value: React.PropTypes.any.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+    }
+
+    constructor() {
         super();
 
-        this.ticketField = props.field;
-        this.ticketKey = props.ticketKey;
-
         this.state = {
-            editing : false,
-            value : props.value,
+            editing : false
         }
         this.selectOnChange = true;
     }
 
-    componentWillMount() {
-    }
-
-    componentWillUnmount() {
-    }
-
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate() {
         if (this.state.editing) {
             this.refs.valueInput.focus();
             if (this.selectOnChange) {
@@ -29,14 +28,10 @@ export default class EditableTextView extends React.Component {
                 this.selectOnChange = false;
             }
         }
-
-        var data = {};
-        data[this.ticketField] = this.state.value;
-        firebase.updateTicket(this.ticketKey, data);
     }
 
     startEditing = () => {
-        this.setState({editing:true});
+        this.setState( { editing : true } );
     }
 
     stopEditing = () => {
@@ -51,7 +46,7 @@ export default class EditableTextView extends React.Component {
                     type = "text"
                     ref = "valueInput"
                     onChange={(e) => {
-                        this.setState( {value : e.target.value} );
+                        this.props.onChange( e.target.value );
                     }}
                     onBlur={() => {
                         this.stopEditing();
@@ -59,15 +54,13 @@ export default class EditableTextView extends React.Component {
                     onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.stopEditing();
                     }}
-                    defaultValue={this.state.value}
-                    autofocus
+                    defaultValue={this.props.value}
                 />
             );
         } else {
             return (
-                <h3 onDoubleClick={() => this.startEditing()}>{this.state.value}</h3>
+                <span onDoubleClick={() => this.startEditing()}>{this.props.value}</span>
             );
         }
     }
-
 }

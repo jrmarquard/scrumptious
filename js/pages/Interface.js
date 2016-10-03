@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router";
 
-import Nav from "../components/Nav.js"
+import NavSite from "../components/NavSite.js"
 import firebase from "firebase"
 
 export default class Interface extends React.Component {
@@ -25,9 +25,9 @@ export default class Interface extends React.Component {
 
     authObserver = (user) => {
         if (user) {
-            this.setState({loggedin : true });
+            this.setState({ loggedin : true });
         } else {
-            this.setState({loggedin : false });
+            this.setState({ loggedin : false });
         }
     }
 
@@ -35,7 +35,7 @@ export default class Interface extends React.Component {
         if (this.state.loggedin) {
             return (
                 <div>
-                    <Nav loggedin={this.state.loggedin}/>
+                    <NavSite />
                     <div id='content'>
                         {this.props.children}
                     </div>
@@ -44,7 +44,7 @@ export default class Interface extends React.Component {
         } else {
             return (
                 <div>
-                    <Nav />
+                    <NavSite />
                     <h1>Welcome to Scrumptious</h1>
                     <p>Please sign in, or sign up if you haven't already</p>
                 </div>

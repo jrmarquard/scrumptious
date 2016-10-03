@@ -1,50 +1,10 @@
+// Needs patching up.
+// Hard to develop with strict rules in place. Likely just going to leave them
+// open for now.
+
 {
-    "rules": {
-        // Nobody can write to everything, nobody can read everything.
-        // These will be overwritten deeper in the rules.
-        ".read": false,
-        ".write": false,
-
-        // List of projects
-        "projects": {
-            // A project
-            "$projectId": {
-                // Project read/write by anyone in the $projectID/users list
-                // ".read": "root.child.('projects/' + $projectId + '/users/' + auth.uid).exists()",
-                // ".write": "root.child.('projects/' + $projectId + '/users/' + auth.uid).exists()",
-
-                // temp rules it's getting too late
-                ".read" : "root.child($projectId).child('owner').val() === auth.id",
-                ".write" : "root.child($projectId).child('owner').val() === auth.id",
-
-                // Projects must have a title, an owner, and a users list
-                ".validate": "newData.hasChildren(['title','owner'])",
-                "title": {
-                    // title can only be a string and <100 characters
-                    ".validate": "newData.isString() && newData.val().length < 100",
-                },
-                "owner": {
-                    // owner must exist as a key in our /users/ index
-                    ".validate": "root.child('users/' + newData.val()).exists()",
-                },
-            },
-        },
-
-        // List of users
-        "users": {
-            "$uid": {
-                // User can read/write their own data.
-                ".read": "$uid === auth.uid",
-                ".write": "$uid === auth.uid",
-                // User must have a name
-                ".validate": "newData.hasChild('name')",
-                // List of projects the user is 'in'
-                "projects": {
-                    "userProjects": {
-                        ".validate": "root.child('projects/' + newData.val()).exists()",
-                    },
-                },
-            },
-        },
-    },
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
 }

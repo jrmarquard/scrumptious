@@ -8,12 +8,12 @@ export default class Auth extends React.Component {
             statusMessage: "Default",
             email: "",
             password: "",
+            username: "",
             signedin: false,
         };
     }
 
     componentDidMount () {
-        // Set observer on the Auth object
         this.authUnsub = firebase.auth().onAuthStateChanged(this.authObserver);
     }
 
@@ -27,6 +27,7 @@ export default class Auth extends React.Component {
             // Only allow the user to sign in once their email is verified
             if (!user.emailVerified) {
                 user.sendEmailVerification();
+                console.log('Email not verified, signing out')
                 this.signOut();
             } else {
                 this.setState({signedin : true});
@@ -38,31 +39,22 @@ export default class Auth extends React.Component {
 
     // Signs the user up and sends them an email verification if successful.
     signUp = () => {
-        // Create a user with email and pass.
         firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(function(user) {
+        .then((user) => {
             // Send them an email veritication.
             user.sendEmailVerification();
             // Add them to the database
-            firebase.addCurrentUser();
+            // This should be moved to once they have verified email ... etc
+            firebase.addCurrentUser('Jo Doe', this.state.username);
         })
-        .catch(function(error) {
-            console.log('ERROR: ' + error.code + ': ' + error.message);
-        });
+        .catch((error) => console.log(error));
     };
 
     // Signs the user in
     signIn = () => {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then(function() {
-            // TODO: login handling
-            console.log('logged in successfully');
-        })
-        .catch(function(error) {
-            // TODO: login error handling
-            console.log('ERROR: ' + error.code + ': ' + error.message);
-        });
-        return false;
+        .then(() => console.log('logged in successfully'))
+        .catch((error) => console.log(error));
     };
 
     resetPassword = () => {
@@ -91,6 +83,9 @@ export default class Auth extends React.Component {
                     <form onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.signIn()
                     }} >
+                        <input type="text" onChange={(e) => {
+                            this.setState({username: e.target.value})
+                        }} placeholder="Username"/>
                         <input type="text" onChange={(e) => {
                             this.setState({email: e.target.value})
                         }} placeholder="Email"/>

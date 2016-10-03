@@ -20,11 +20,12 @@ firebase.getCurrentUser = () => {
     return firebase.auth().currentUser;
 }
 
-firebase.addCurrentUser = () => {
+firebase.addCurrentUser = (name, userName) => {
     var currentUserID = firebase.auth().currentUser.uid;
     firebase.database().ref('users/' + currentUserID)
     .set({
-        name: 'Scrumdiddlyumptious 2',
+        name: name,
+        username: userName,
     })
     .then(() => {
         console.log("User added");
@@ -33,11 +34,6 @@ firebase.addCurrentUser = () => {
         console.log("User add failed." + error.message);
     });
 }
-
-firebase.addTicket = () => {
-
-}
-
 
 /************/
 /* Projects */
@@ -136,17 +132,19 @@ firebase.addUserToProject = (projectID, user) => {
 }
 
 
-/***********/
-/* Tickets */
-/***********/
+/***********
+ * Tickets
+ *
+ * Ticket funcionality for current project. 
+ * Current project must be set.
+ */
 
 /**
- *  Create a project.
- *  user: user id of the owner of the project
- *   title: title of the project
+ *  Ticket funcionality for current project. Current project must be set.
  */
 firebase.createTicket = (title, description, state, priority) => {
-    firebase.database().ref('tickets').push({
+    firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets')
+    .push({
         title: title,
         description: description,
         state: state,
@@ -155,11 +153,13 @@ firebase.createTicket = (title, description, state, priority) => {
 }
 
 firebase.updateTicket = (key, data) => {
-    firebase.database().ref("tickets/"+key).update(data);
+    firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets/'+key).update(data);
 }
 
 firebase.deleteTicket = (key) => {
-    firebase.database().ref('tickets').child(key).remove();
+    firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets').child(key)
+    .remove()
+    .catch((err) => console.log(err));
 }
 
 firebase.getTicket = (key) => {
@@ -169,17 +169,23 @@ firebase.getTicket = (key) => {
     });
 }
 
-firebase.projectChangeSubscribers = new Array;
+/*************
+ * Listeners 
+ *
+ * Events
+ *  - project_change: this fires whenever the project is changed, giving the
+ *    subscriber the project ID of the project changed to. When the subscription
+ *    is made, the event is fire once. If no project selected, ID = 0.
+ *
+ */
 
-firebase.changeProject = (projectID) => {
-    var projectID = projectID;
-    firebase.projectChangeSubscribers.forEach((f) => {
-        if (f !== null) f(projectID);
-    });
-}
+// Subscribers
+firebase.projectChangeSubscribers = new Array;
+firebase.currentProjectID = 0;
 
 firebase.subscribe = (event, f) => {
     if (event === 'project_change') {
+        f(firebase.currentProjectID);
         return firebase.projectChangeSubscribers.push(f) - 1;
     } else {
         return null;
@@ -190,3 +196,12 @@ firebase.unsubscribe = (event, i) => {
         firebase.projectChangeSubscribers[i] = null;
     }
 }
+
+firebase.setCurrentProject = (projectID) => {
+    firebase.currentProjectID = projectID;
+    firebase.projectChangeSubscribers.forEach((f) => {
+        if (f !== null) f(firebase.currentProjectID);
+    });
+}
+
+
