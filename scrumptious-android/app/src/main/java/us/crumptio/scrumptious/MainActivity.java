@@ -1,13 +1,25 @@
 package us.crumptio.scrumptious;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
+
+    public static void openActivity(AppCompatActivity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
+    }
 
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
@@ -22,5 +34,38 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setPadding(padding, 0, padding, 0);
         mViewPager.setClipToPadding(false);
         mViewPager.setAdapter(new ScrumBoardAdapter(getSupportFragmentManager()));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                signOut();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void signOut() {
+        new MaterialDialog.Builder(this)
+                .title("Sign Out")
+                .content("Are you sure you want to sign out?")
+                .positiveText("Sign Out")
+                .negativeText("Cancel")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        mAuth.signOut();
+                        LoginActivity.openActivity(MainActivity.this);
+                        finish();
+                    }
+                })
+                .show();
     }
 }
