@@ -73,11 +73,15 @@ export default class Auth extends React.Component {
 
     render() {
         if (this.state.signedin) {
-
+            return(
+                <div id="authform">
+                    <Button bsStyle="default" class="marg-left" onClick={this.signOut}>Sign Out</Button>
+                    <Button bsStyle="default" class="marg-left" onClick={this.resetPassword}>Reset Password</Button>
+                </div>
+            );
         } else {
             return (
-                <div id="authform" class="padding">
-                    <form onKeyPress={(e) => {
+                    <form id="inline" onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.signIn()
                     }} >
                         <FormControl type="text" class="margins" onChange={(e) => {
@@ -92,7 +96,6 @@ export default class Auth extends React.Component {
                         <Button bsStyle="primary" class="marg-left" onClick={this.signIn}>Sign In</Button>
                         <Button bsStyle="default" class="marg-left" onClick={this.signUp}>Sign Up</Button>
                     </form>
-                </div>
             );
         }
     }

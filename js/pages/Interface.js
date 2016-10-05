@@ -47,9 +47,10 @@ export default class Interface extends React.Component {
             return (
                 <div>
                     <NavSite />
+                    <div class="container">
                     <h1>Welcome to Scrumptious</h1>
                     <p>Please sign in, or sign up if you haven't already</p>
-                    <Auth />
+                    </div>
                 </div>
             );
         }

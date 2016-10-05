@@ -33,13 +33,12 @@ export default class NNav extends React.Component {
                   <NavItem eventKey={4}>User</NavItem>
                  </LinkContainer>
              </Nav>
-             <Navbar.Form pullRight>
-             <Button bsStyle="default" class="marg-left" onClick={Auth.signOut}>Sign Out</Button>
-             <Button bsStyle="default" class="marg-left" onClick={Auth.resetPassword}>Reset Password</Button>
+             <Navbar.Form pullRight class="no-marg">
+              <div id="authform">
+                <Auth />
+              </div>
             </Navbar.Form>
            </Navbar>
-
-
         );
     }
 }

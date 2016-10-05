@@ -50,8 +50,11 @@ nav#nav-project div {
 form{
   padding-right: 2rem;
 }
+form#inline{
+  display: inline-block;;
+}
 .margins{
-  margin: 1rem;
+  margin: 0rem;
 }
 
 
@@ -81,9 +84,9 @@ div#project-page {
 #authform {
 margin: 0 auto;
 float: left;
-max-width: 500px;
 text-align: left;
 }
+
 
 #authform h1 {
     font-size: 22px;
