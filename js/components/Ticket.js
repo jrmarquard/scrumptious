@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import EditableTextView from './EditableTextView.js';
+import { Button, Panel } from 'react-bootstrap';
 
 export default class Ticket extends React.Component {
     constructor(props) {

@@ -4,6 +4,8 @@ import { Link } from "react-router";
 import NavSite from "../components/NavSite.js"
 import firebase from "firebase"
 
+import Auth from '../components/Auth.js';
+
 export default class Interface extends React.Component {
 
     constructor() {
@@ -47,6 +49,7 @@ export default class Interface extends React.Component {
                     <NavSite />
                     <h1>Welcome to Scrumptious</h1>
                     <p>Please sign in, or sign up if you haven't already</p>
+                    <Auth />
                 </div>
             );
         }

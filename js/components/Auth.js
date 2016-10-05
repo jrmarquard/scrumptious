@@ -1,5 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
+import { Button } from "react-bootstrap";
+import { FormControl } from "react-bootstrap";
 
 export default class Auth extends React.Component {
     constructor() {
@@ -71,30 +73,25 @@ export default class Auth extends React.Component {
 
     render() {
         if (this.state.signedin) {
-            return(
-                <div id="authform">
-                    <button onClick={this.signOut}>Sign Out</button>
-                    <button onClick={this.resetPassword}>Reset Password</button>
-                </div>
-            );
+
         } else {
             return (
-                <div id="authform">
+                <div id="authform" class="padding">
                     <form onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.signIn()
                     }} >
-                        <input type="text" onChange={(e) => {
+                        <FormControl type="text" class="margins" onChange={(e) => {
                             this.setState({username: e.target.value})
                         }} placeholder="Username"/>
-                        <input type="text" onChange={(e) => {
+                        <FormControl type="text" class="margins" onChange={(e) => {
                             this.setState({email: e.target.value})
                         }} placeholder="Email"/>
-                        <input type="password" onChange={(e) => {
+                        <FormControl type="password" class="margins" onChange={(e) => {
                             this.setState({password: e.target.value})
                         }} placeholder="Password"/>
+                        <Button bsStyle="primary" class="marg-left" onClick={this.signIn}>Sign In</Button>
+                        <Button bsStyle="default" class="marg-left" onClick={this.signUp}>Sign Up</Button>
                     </form>
-                    <button onClick={this.signIn}>Sign In</button>
-                    <button onClick={this.signUp}>Sign Up</button>
                 </div>
             );
         }

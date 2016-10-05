@@ -31,11 +31,10 @@ export default class ProjectContent extends React.Component {
     render() {
         return (
             <div id='project-ui'>
-                <h1>{this.state.projectTitle}</h1>
-            	<NavProject projectID={this.props.params.projectID}/>
+            	<NavProject projectID={this.props.params.projectID} projectTitle={this.state.projectTitle}/>
                 <div id='project-page'>
                     {this.props.children}
-                </div> 
+                </div>
             </div>
         );
     }
