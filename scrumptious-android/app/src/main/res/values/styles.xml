@@ -18,6 +18,8 @@
         <item name="colorControlNormal">#40FFFFFF</item>
         <item name="colorControlActivated">#A0FFFFFF</item>
         <item name="colorControlHighlight">@android:color/white</item>
+
+        <item name="android:windowBackground">@drawable/bg_splash</item>
     </style>
 
 </resources>
