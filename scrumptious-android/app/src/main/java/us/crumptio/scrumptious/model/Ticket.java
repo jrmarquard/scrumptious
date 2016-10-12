@@ -8,6 +8,14 @@ import android.os.Parcelable;
  */
 public class Ticket implements Parcelable {
 
+    public enum Status {
+        TO_DO,
+        IN_PROGRESS,
+        CODE_REVIEW,
+        DONE
+    }
+
+    private String mRefId;
     private String mTitle;
     private String mDescription;
     private String mAssignee;
@@ -48,6 +56,23 @@ public class Ticket implements Parcelable {
         parcel.writeString(mDescription);
         parcel.writeString(mAssignee);
         parcel.writeInt(mPoints);
+    }
+
+    public void update(Ticket ticket) {
+        if (ticket.mRefId.equals(mRefId)) {
+            mTitle = ticket.mTitle;
+            mDescription = ticket.mDescription;
+            mAssignee = ticket.mAssignee;
+            mPoints = ticket.mPoints;
+        }
+    }
+
+    public String getRefId() {
+        return mRefId;
+    }
+
+    public void setRefId(String mRefId) {
+        this.mRefId = mRefId;
     }
 
     public String getTitle() {

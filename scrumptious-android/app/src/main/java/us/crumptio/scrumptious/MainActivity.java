@@ -11,15 +11,12 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import us.crumptio.scrumptious.login.LoginActivity;
+import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
+import us.crumptio.scrumptious.repositories.ProjectsRepository;
 
 public class MainActivity extends BaseActivity {
 
@@ -29,6 +26,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private ProjectsRepository mProjectsRepo = new FirebaseProjectsRepository();
 
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
@@ -44,28 +43,10 @@ public class MainActivity extends BaseActivity {
         mViewPager.setClipToPadding(false);
 
         Log.d(TAG, mAuth.getCurrentUser().getUid());
-        // Get the default project (i.e. first project id under users/$uid/projects)
-        Query query = mDatabase.getReference("users").child(mAuth.getCurrentUser().getUid()).child("projects").limitToFirst(1);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        mProjectsRepo.getDefaultProject(new ProjectsRepository.OnProjectRetrievedCallback() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Object value = dataSnapshot.getValue();
-                if (value != null && value instanceof Map) {
-                    Log.d(TAG, dataSnapshot.getValue().toString());
-                    Map res = (Map) value;
-                    for (Object entry : res.entrySet()) {
-                        if (entry instanceof Map.Entry) {
-                            mViewPager.setAdapter(new ScrumBoardAdapter(getSupportFragmentManager(), ((Map.Entry) entry).getKey().toString()));
-                        }
-                        break;
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onProjectRetrieved(String projectId) {
+                mViewPager.setAdapter(new ScrumBoardAdapter(getSupportFragmentManager(), projectId));
             }
         });
     }

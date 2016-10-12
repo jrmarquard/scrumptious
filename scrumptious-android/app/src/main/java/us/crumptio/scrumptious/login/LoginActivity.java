@@ -1,4 +1,4 @@
-package us.crumptio.scrumptious;
+package us.crumptio.scrumptious.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,9 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import us.crumptio.scrumptious.BaseActivity;
+import us.crumptio.scrumptious.MainActivity;
+import us.crumptio.scrumptious.R;
 
 /**
  * Created by josh on 5/10/2016.

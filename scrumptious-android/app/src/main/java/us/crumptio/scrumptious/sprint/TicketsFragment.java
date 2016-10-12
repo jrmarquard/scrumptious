@@ -1,21 +1,15 @@
-package us.crumptio.scrumptious;
+package us.crumptio.scrumptious.sprint;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.devspark.robototextview.widget.RobotoTextView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +18,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.nlopez.smartadapters.SmartAdapter;
 import io.nlopez.smartadapters.adapters.RecyclerMultiAdapter;
+import us.crumptio.scrumptious.R;
 import us.crumptio.scrumptious.model.Ticket;
+import us.crumptio.scrumptious.repositories.FirebaseTicketsRepository;
+import us.crumptio.scrumptious.repositories.TicketsRepository;
 import us.crumptio.scrumptious.view.TicketView;
 
 /**
  * Created by josh on 2/10/2016.
  */
-public class TicketsFragment extends Fragment {
+public class TicketsFragment extends Fragment implements TicketsRepository.OnTicketsRetrievedListener {
 
     private static final String ARG_PROJECT_ID = "arg_project_id";
     private static final String ARG_STATUS = "arg_status";
@@ -39,18 +36,7 @@ public class TicketsFragment extends Fragment {
 
     private static final String TAG = TicketsFragment.class.getSimpleName();
 
-    public enum Status {
-        TO_DO,
-        IN_PROGRESS,
-        CODE_REVIEW,
-        DONE;
-
-
-        @Override
-        public String toString() {
-            return super.toString().replace('_', ' ');
-        }
-    }
+    private TicketsRepository mTicketsRepo = new FirebaseTicketsRepository();
 
     @BindView(R.id.status_title)
     RobotoTextView mTitle;
@@ -59,12 +45,12 @@ public class TicketsFragment extends Fragment {
     RecyclerView mList;
 
     private String mProjectId;
-    private Status mStatus;
+    private Ticket.Status mStatus;
 
     private RecyclerMultiAdapter mAdapter;
     private List<Ticket> mTickets;
 
-    public static TicketsFragment newInstance(String projectId, Status status) {
+    public static TicketsFragment newInstance(String projectId, Ticket.Status status) {
         TicketsFragment frag = new TicketsFragment();
         Bundle args = new Bundle();
 
@@ -79,43 +65,14 @@ public class TicketsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(ARG_STATUS)) {
-            mStatus = Status.values()[getArguments().getInt(ARG_STATUS)];
+            mStatus = Ticket.Status.values()[getArguments().getInt(ARG_STATUS)];
         }
         if (getArguments() != null && getArguments().containsKey(ARG_PROJECT_ID)) {
             mProjectId = getArguments().getString(ARG_PROJECT_ID);
         }
 
         mTickets = new ArrayList<>();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("projects").child(mProjectId).child("tickets");
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded");
-                mTickets.add(dataSnapshot.getValue(Ticket.class));
-                mAdapter.setItems(mTickets);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildChanged");
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved");
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onChildCancelled");
-            }
-        });
+        mTicketsRepo.getTickets(mProjectId, mStatus, this);
     }
 
     @Nullable
@@ -130,7 +87,7 @@ public class TicketsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mTitle.setText(mStatus.toString());
+        mTitle.setText(mStatus.toString().replace('_', ' '));
         switch (mStatus) {
             case TO_DO:
                 mTitle.setBackgroundResource(R.drawable.blue_rounded_rectangle);
@@ -155,6 +112,12 @@ public class TicketsFragment extends Fragment {
         mAdapter = SmartAdapter.empty()
                 .map(Ticket.class, TicketView.class)
                 .into(mList);
+    }
+
+    @Override
+    public void onTicketsRetrieved(List<Ticket> tickets) {
+        mTickets = tickets;
+        mAdapter.setItems(mTickets);
     }
 
     @Override
