@@ -40,7 +40,16 @@ nav#nav-project div {
     font-weight: bold;
     color: white;
 }
-
+#state-board{
+  display: inline-block;
+  float: left;
+  width: 200px;
+  margin-top: 50px;
+  margin-right: 20px;
+}
+#inner-panel{
+  padding: 0;
+}
 .marg-left{
   margin-left: 1rem;
 }
