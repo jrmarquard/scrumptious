@@ -44,7 +44,8 @@ public class TicketView extends BindableRelativeLayout<Ticket> {
     public void bind(Ticket ticket) {
         mTitle.setText(ticket.getTitle());
         mAssignee.setText(ticket.getAssignee());
-        mPoints.setText(String.valueOf(ticket.getPoints()));
+        mPoints.setText(ticket.getPoints() == (int) ticket.getPoints()
+                ? String.format("%d", (int) ticket.getPoints()) : String.valueOf(ticket.getPoints()));
         mDescription.setText(ticket.getDescription());
     }
 

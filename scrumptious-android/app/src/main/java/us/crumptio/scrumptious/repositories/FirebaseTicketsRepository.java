@@ -1,5 +1,6 @@
 package us.crumptio.scrumptious.repositories;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +20,8 @@ import us.crumptio.scrumptious.model.Ticket;
  */
 public class FirebaseTicketsRepository extends BaseRepository implements TicketsRepository {
 
+    private final FirebaseDatabase DB = FirebaseDatabase.getInstance();
+
     private List<Ticket> mTickets;
     private Map<String, Ticket> mTicketRefs;
 
@@ -35,8 +38,7 @@ public class FirebaseTicketsRepository extends BaseRepository implements Tickets
     @Override
     public void getTickets(String projectId, Ticket.Status status, final OnTicketsRetrievedListener listener) {
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        Query query = database.getReference("projects").child(projectId).child("tickets")
+        Query query = DB.getReference("projects").child(projectId).child("tickets")
                 .orderByChild("status").equalTo(status.toString().toLowerCase());
         query.addChildEventListener(new ChildEventListener() {
             @Override
@@ -83,7 +85,18 @@ public class FirebaseTicketsRepository extends BaseRepository implements Tickets
     }
 
     @Override
-    public void createTicket(String projectId, OnTicketCreatedCallback callback) {
+    public void createTicket(String projectId, Ticket ticket, final OnTicketCreatedCallback callback) {
+        DB.getReference("projects")
+                .child(projectId)
+                .child("tickets")
+                .push()
+                .setValue(ticket)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onTicketCreated(null);
+                    }
+                });
 
     }
 

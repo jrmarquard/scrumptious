@@ -12,14 +12,20 @@ public class Ticket implements Parcelable {
         TO_DO,
         IN_PROGRESS,
         CODE_REVIEW,
-        DONE
+        DONE;
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
     }
 
     private String mRefId;
     private String mTitle;
     private String mDescription;
     private String mAssignee;
-    private int mPoints;
+    private float mPoints;
+    private String mStatus;
 
     public static Ticket newInstance() {
         Ticket ticket = new Ticket();
@@ -37,6 +43,7 @@ public class Ticket implements Parcelable {
             ticket.setDescription(in.readString());
             ticket.setAssignee(in.readString());
             ticket.setPoints(in.readInt());
+            ticket.setStatus(in.readString());
             return ticket;
         }
 
@@ -55,7 +62,8 @@ public class Ticket implements Parcelable {
         parcel.writeString(mTitle);
         parcel.writeString(mDescription);
         parcel.writeString(mAssignee);
-        parcel.writeInt(mPoints);
+        parcel.writeFloat(mPoints);
+        parcel.writeString(mStatus.toString());
     }
 
     public void update(Ticket ticket) {
@@ -64,6 +72,7 @@ public class Ticket implements Parcelable {
             mDescription = ticket.mDescription;
             mAssignee = ticket.mAssignee;
             mPoints = ticket.mPoints;
+            mStatus = ticket.mStatus;
         }
     }
 
@@ -99,11 +108,19 @@ public class Ticket implements Parcelable {
         this.mAssignee = mAssignee;
     }
 
-    public int getPoints() {
+    public float getPoints() {
         return mPoints;
     }
 
-    public void setPoints(int mPoints) {
+    public void setPoints(float mPoints) {
         this.mPoints = mPoints;
+    }
+
+    public String getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(String status) {
+        mStatus = status.toLowerCase();
     }
 }

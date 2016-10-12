@@ -14,6 +14,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.login.LoginActivity;
 import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
 import us.crumptio.scrumptious.repositories.ProjectsRepository;
@@ -28,6 +30,8 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private ProjectsRepository mProjectsRepo = new FirebaseProjectsRepository();
+
+    private String mProjectId;
 
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
@@ -46,6 +50,7 @@ public class MainActivity extends BaseActivity {
         mProjectsRepo.getDefaultProject(new ProjectsRepository.OnProjectRetrievedCallback() {
             @Override
             public void onProjectRetrieved(String projectId) {
+                mProjectId = projectId;
                 mViewPager.setAdapter(new ScrumBoardAdapter(getSupportFragmentManager(), projectId));
             }
         });
@@ -65,6 +70,11 @@ public class MainActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.btn_new_ticket)
+    protected void onNewTicketClicked() {
+        CreateTicketActivity.openActivity(this, mProjectId);
     }
 
     private void signOut() {

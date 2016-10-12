@@ -87,7 +87,7 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mTitle.setText(mStatus.toString().replace('_', ' '));
+        mTitle.setText(mStatus.toString().replace('_', ' ').toUpperCase());
         switch (mStatus) {
             case TO_DO:
                 mTitle.setBackgroundResource(R.drawable.blue_rounded_rectangle);
