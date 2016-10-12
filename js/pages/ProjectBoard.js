@@ -65,6 +65,7 @@ export default class Board extends React.Component {
     render() {
       var TicketComponents = [];
       var states = [];
+      var print = [];
       //figure out the lost of states
       for (var key in this.state.tickets) {
         var st = this.state.tickets[key].state;
@@ -77,11 +78,11 @@ export default class Board extends React.Component {
       for(var i in states){
         var status = states[i];
         var temp = [];
-        temp.push(<Panel header={status}></Panel>);
         for (var key in this.state.tickets) {
           if(this.state.tickets[key].state == status){
             temp.push(
                 <Ticket
+                    id="inner-panel"                
                     key={key}
                     ticketRef={'projects/' + this.props.params.projectID + '/tickets/' + key}
                     ticket={this.state.tickets[key]}
@@ -89,14 +90,18 @@ export default class Board extends React.Component {
             );
           }
         }
-      //  temp.push(</Panel>);
         TicketComponents.push(temp);
       }
+
+      for (var j in TicketComponents){
+        print.push(<Panel id="state-board" header={states[j]}>{TicketComponents[j]}</Panel>);
+      }
+
         return (
             <div>
                 <h1>Board: {this.props.params.projectID}</h1>
                 <button onClick={() => this.createTicket()}>Create</button>
-                <div id="tickets">{TicketComponents}</div>
+                <div id="tickets">{print}</div>
             </div>
         );
     }
