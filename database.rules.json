@@ -1,3 +1,7 @@
+// Needs patching up.
+// Hard to develop with strict rules in place. Likely just going to leave them
+// open for now.
+
 {
   "rules": {
     ".read": "auth != null",

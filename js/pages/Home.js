@@ -1,18 +1,16 @@
 import React from 'react';
 
-import Auth from '../components/Auth.js'
+import Notifications from "../components/Notifications.js"
 
 export default class Home extends React.Component {
-
-    constructor() {
-        super();
-    }
 
     render() {
         return (
             <div>
-                <h2>Home</h2>
+                <h1>Home</h1>
+                <Notifications />
             </div>
         );
     }
+
 }

@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link } from "react-router";
 
-import Nav from "../components/Nav.js"
+import NavSite from "../components/NavSite.js"
 import firebase from "firebase"
+
+import Auth from '../components/Auth.js';
 
 export default class Interface extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            loading : true,
-            loggedin : false };
+            loggedin : false
+        };
     }
 
     componentWillMount() {
@@ -25,33 +27,30 @@ export default class Interface extends React.Component {
 
     authObserver = (user) => {
         if (user) {
-            this.setState({loggedin : true });
+            this.setState({ loggedin : true });
         } else {
-            this.setState({loggedin : false });
+            this.setState({ loggedin : false });
         }
-        this.setState({loading : false});
     }
 
     render() {
         if (this.state.loggedin) {
             return (
                 <div>
-                    <Nav loggedin={this.state.loggedin}/>
-                    {this.props.children}
+                    <NavSite />
+                    <div id='content'>
+                        {this.props.children}
+                    </div>
                 </div>
             );
-        } else if (this.state.loading) {
-            return (
-                <div>
-                    <h1>Loading</h1>
-                </div>
-            )
         } else {
             return (
                 <div>
-                    <Nav />
+                    <NavSite />
+                    <div class="container">
                     <h1>Welcome to Scrumptious</h1>
                     <p>Please sign in, or sign up if you haven't already</p>
+                    </div>
                 </div>
             );
         }

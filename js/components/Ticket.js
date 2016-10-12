@@ -1,21 +1,43 @@
 import React from 'react';
 import firebase from 'firebase';
 import EditableTextView from './EditableTextView.js';
+import { Button, Panel } from 'react-bootstrap';
 
 export default class Ticket extends React.Component {
+    constructor(props) {
+        super();
+    }
+
     deleteTicket = () => {
         firebase.deleteTicket(this.props.ticket.key);
     }
 
+    updateField = (field, value) => {
+        firebase.database().ref(this.props.ticketRef).child(field)
+        .set(value)
+        .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
+    }
+
     render() {
-        const {key,title,description,state,priority} = this.props.ticket;
         return(
-            <div class="ticket" id={key}>
-                <EditableTextView value={title} field="title" ticketKey={key} />
-                <EditableTextView value={state} field="state" ticketKey={key} />
-                <EditableTextView value={priority} field="priority" ticketKey={key} />
-                <EditableTextView value={description} field="description" ticketKey={key} />
-                <button onClick={this.deleteTicket}>Delete</button>
+            <div class="ticket" id={this.props.ticket.key}>
+                <EditableTextView
+                    value={this.props.ticket.title}
+                    onChange={(data) => this.updateField('title', data)}
+                />
+                <EditableTextView
+                    value={this.props.ticket.state}
+                    onChange={(data) => this.updateField('state', data)}
+                />
+                <EditableTextView
+                    value={this.props.ticket.priority}
+                    onChange={(data) => this.updateField('priority', data)}
+                />
+                <EditableTextView
+                    value={this.props.ticket.description}
+                    onChange={(data) => this.updateField('description', data)}
+                />
+                <button onClick={() => this.deleteTicket()}>Delete</button>
             </div>
         );
     }

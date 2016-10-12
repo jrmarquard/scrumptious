@@ -1,5 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
+import { Button } from "react-bootstrap";
+import { FormControl } from "react-bootstrap";
 
 export default class Auth extends React.Component {
     constructor() {
@@ -8,12 +10,12 @@ export default class Auth extends React.Component {
             statusMessage: "Default",
             email: "",
             password: "",
+            username: "",
             signedin: false,
         };
     }
 
     componentDidMount () {
-        // Set observer on the Auth object
         this.authUnsub = firebase.auth().onAuthStateChanged(this.authObserver);
     }
 
@@ -24,10 +26,14 @@ export default class Auth extends React.Component {
     // Called when auth state is changed
     authObserver = (user) => {
         if (user) {
+            // Only allow the user to sign in once their email is verified
             if (!user.emailVerified) {
                 user.sendEmailVerification();
+                console.log('Email not verified, signing out')
+                this.signOut();
+            } else {
+                this.setState({signedin : true});
             }
-            this.setState({signedin : true});
         } else {
             this.setState({signedin : false});
         }
@@ -35,29 +41,22 @@ export default class Auth extends React.Component {
 
     // Signs the user up and sends them an email verification if successful.
     signUp = () => {
-        // Sign in with email and pass.
         firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(function(user) {
-            // When creating a user for the first time, send them an email veritication.
+        .then((user) => {
+            // Send them an email veritication.
             user.sendEmailVerification();
+            // Add them to the database
+            // This should be moved to once they have verified email ... etc
+            firebase.addCurrentUser('Jo Doe', this.state.username);
         })
-        .catch(function(error) {
-            console.log('ERROR: ' + error.code + ': ' + error.message);
-        });
+        .catch((error) => console.log(error));
     };
 
     // Signs the user in
     signIn = () => {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then(function() {
-            // TODO: login handling
-            console.log('logged in successfully');
-        })
-        .catch(function(error) {
-            // TODO: login error handling
-            console.log('ERROR: ' + error.code + ': ' + error.message);
-        });
-        return false;
+        .then(() => console.log('logged in successfully'))
+        .catch((error) => console.log(error));
     };
 
     resetPassword = () => {
@@ -69,34 +68,34 @@ export default class Auth extends React.Component {
 
     // Signs the current user out
     signOut = () => {
-        firebase.auth().signOut()
-        .catch((e) => console.log(e));
+        firebase.auth().signOut();
     };
 
     render() {
         if (this.state.signedin) {
             return(
                 <div id="authform">
-                    <button onClick={this.signOut}>Sign Out</button>
-                    <button onClick={this.resetPassword}>Reset Password</button>
+                    <Button bsStyle="default" class="marg-left" onClick={this.signOut}>Sign Out</Button>
+                    <Button bsStyle="default" class="marg-left" onClick={this.resetPassword}>Reset Password</Button>
                 </div>
             );
         } else {
             return (
-                <div id="authform">
-                    <form onKeyPress={(e) => {
+                    <form id="inline" onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.signIn()
                     }} >
-                        <input type="text" onChange={(e) => {
+                        <FormControl type="text" class="margins" onChange={(e) => {
+                            this.setState({username: e.target.value})
+                        }} placeholder="Username"/>
+                        <FormControl type="text" class="margins" onChange={(e) => {
                             this.setState({email: e.target.value})
                         }} placeholder="Email"/>
-                        <input type="password" onChange={(e) => {
+                        <FormControl type="password" class="margins" onChange={(e) => {
                             this.setState({password: e.target.value})
                         }} placeholder="Password"/>
+                        <Button bsStyle="primary" class="marg-left" onClick={this.signIn}>Sign In</Button>
+                        <Button bsStyle="default" class="marg-left" onClick={this.signUp}>Sign Up</Button>
                     </form>
-                    <button onClick={this.signIn}>Sign In</button>
-                    <button onClick={this.signUp}>Sign Up</button>
-                </div>
             );
         }
     }

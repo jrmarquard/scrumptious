@@ -1,8 +1,10 @@
 import React from 'react';
+import firebase from 'firebase';
 
 /*
  *  Text field that can be edited on double click, and when
- *  the value changes it calls the function provided in props.onChange
+ *  the value changes
+ *
  */
 export default class EditableTextViewImproved extends React.Component {
     // Required props for this Component
@@ -11,8 +13,9 @@ export default class EditableTextViewImproved extends React.Component {
         onChange: React.PropTypes.func.isRequired,
     }
 
-    constructor() {
+    constructor(props) {
         super();
+        this.props = props;
 
         this.state = {
             editing : false
@@ -21,7 +24,7 @@ export default class EditableTextViewImproved extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.state.editing) {
+        if (this.state.waitingToEdit) {
             this.refs.valueInput.focus();
             if (this.selectOnChange) {
                 this.refs.valueInput.select();
@@ -59,8 +62,11 @@ export default class EditableTextViewImproved extends React.Component {
             );
         } else {
             return (
-                <span onDoubleClick={() => this.startEditing()}>{this.props.value}</span>
+                <div onDoubleClick={() => this.startEditing()}>{this.props.value}</div>
             );
         }
     }
+
 }
+
+//EditableTextViewImproved.
