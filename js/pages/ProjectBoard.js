@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router";
 import firebase from 'firebase';
+import { Panel } from 'react-bootstrap';
 
 import Ticket from "../components/Ticket.js";
 
@@ -58,23 +59,39 @@ export default class Board extends React.Component {
     }
 
     createTicket = () => {
-        firebase.createTicket('test', 'desc', 'low', 'todo');
+        firebase.createTicket('test', 'desc', 'another', 'low');
     }
 
     render() {
-        var TicketComponents = [];
-        // loop over all the key/values
+      var TicketComponents = [];
+      var states = [];
+      //figure out the lost of states
+      for (var key in this.state.tickets) {
+        var st = this.state.tickets[key].state;
+        if(states.indexOf(st) == -1){
+          states.push(st);
+        }
+      }
+      console.log(states);
+      //loop over states and tickets, pushing the markup onto ticket components
+      for(var i in states){
+        var status = states[i];
+        var temp = [];
+        temp.push(<Panel header={status}></Panel>);
         for (var key in this.state.tickets) {
-            // push oonto TIcketComponents
-            TicketComponents.push(
-                <Ticket 
+          if(this.state.tickets[key].state == status){
+            temp.push(
+                <Ticket
                     key={key}
                     ticketRef={'projects/' + this.props.params.projectID + '/tickets/' + key}
-                    ticket={this.state.tickets[key]} 
+                    ticket={this.state.tickets[key]}
                 />
             );
+          }
         }
-
+      //  temp.push(</Panel>);
+        TicketComponents.push(temp);
+      }
         return (
             <div>
                 <h1>Board: {this.props.params.projectID}</h1>
