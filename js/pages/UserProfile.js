@@ -8,17 +8,12 @@ export default class User extends React.Component {
     constructor(props) {
         super();
 
-        this.userID = '';
-
-        if (props.params.userID) {
-            this.userID = props.params.userID;
-        } else {
-            this.userID = firebase.getCurrentUser().uid;
-        }
+        this.userID = props.params.userID;
 
         this.state = {
             name : '',
             username : '',
+            message: ''
         };
     }
 
@@ -54,22 +49,28 @@ export default class User extends React.Component {
             content: this.state.message,
             read: false,
         });
+
+        this.setState({
+            message: ''
+        })
     }
 
     render() {
         return (
             <div>
-                <h1>User Page [{this.userID}]</h1>
+                <h1>Your Profile</h1>
                 <h3>Name: </h3>
                 <EditableTextView
                     value={this.state.name}
                     onChange={(data) => this.updateField('name', data)}
                 />
+                
                 <h3>UserName: </h3>
                 <EditableTextView
                     value={this.state.username}
                     onChange={(data) => this.updateField('username', data)}
                 />
+
                 <h3>Send Message</h3>
                 <input 
                     onChange={(e) => {
@@ -78,7 +79,7 @@ export default class User extends React.Component {
                     onKeyPress={(e) => {
                         if (e.keyCode || e.which == 13) this.sendMessage();
                     }}
-                    defaultValue={this.state.message}
+                    value={this.state.message}
                 />
                 <button onClick={() => this.sendMessage()}>Send Message</button>
 

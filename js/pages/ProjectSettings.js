@@ -3,7 +3,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 import EditableTextView from '../components/EditableTextView.js';
 
-export default class Settings extends React.Component {
+export default class ProjectConfiguration extends React.Component {
 	constructor() {
 		super();
 		this.state = {
@@ -12,14 +12,16 @@ export default class Settings extends React.Component {
 			renderedCollaborators: [],
 		}
 		this.collaborators = {};
+        this._isMounted = false;
 	}
 
     componentDidMount() {
+        this._isMounted = true;
     	this.projectTitleRef = firebase.database().ref('projects/' + firebase.currentProjectID + '/title')
     	this.projectUsersRef = firebase.database().ref('projects/' + firebase.currentProjectID + '/users')
 
 		this.projectTitleRef.on('value', (data) => {
-            this.setState( {
+            this.setState({
                 projectTitle: data.val()
             });
         });
@@ -29,6 +31,7 @@ export default class Settings extends React.Component {
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         firebase.database().ref('projects/' + firebase.currentProjectID + '/title').off();
 
     }	
@@ -67,10 +70,9 @@ export default class Settings extends React.Component {
 	    		)
 
 		    	// Save array of <li> to state for re-rendering
-				this.setState( { renderedCollaborators: tempCollab } ); 
+				if (this._isMounted) this.setState( { renderedCollaborators: tempCollab } ); 
 	        })
     	}
-   		
     }
 
     addUser = () => {

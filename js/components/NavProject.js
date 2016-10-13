@@ -10,20 +10,29 @@ export default class NavProject extends React.Component {
 
     render() {
         return (
-          <Navbar class="navbar-custom">
-           <Navbar.Header>
-             <Navbar.Brand>
-               {this.props.projectTitle}
-             </Navbar.Brand>
-           </Navbar.Header>
-           <Nav id='nav-project'>
-               <LinkContainer to={'/project/' + this.props.projectID + ''}><NavItem>Overview</NavItem></LinkContainer>
-               <LinkContainer to={'/project/' + this.props.projectID + '/board'}><NavItem>Scrum Board</NavItem></LinkContainer>
-               <LinkContainer to={'/project/' + this.props.projectID + '/sprints'}><NavItem>Sprints</NavItem></LinkContainer>
-               <LinkContainer to={'/project/' + this.props.projectID + '/stories'}><NavItem>Stories</NavItem></LinkContainer>
-               <LinkContainer to={'/project/' + this.props.projectID + '/settings'}><NavItem>Settings</NavItem></LinkContainer>
-           </Nav>
-         </Navbar>
+            <Navbar class="navbar-custom">
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        <Link to={'/project/' + this.props.projectID + '/'}>
+                            {this.props.projectTitle}
+                        </Link>
+                    </Navbar.Brand>
+                </Navbar.Header>
+                <Nav id='nav-project'>
+                    <LinkContainer to={'/project/' + this.props.projectID + '/board'}>
+                        <NavItem>Scrum Board</NavItem>
+                    </LinkContainer>
+                    <LinkContainer to={'/project/' + this.props.projectID + '/sprints'}>
+                        <NavItem>Sprints</NavItem>
+                    </LinkContainer>
+                    <LinkContainer to={'/project/' + this.props.projectID + '/stories'}>
+                        <NavItem>Stories</NavItem>
+                    </LinkContainer>
+                    <LinkContainer to={'/project/' + this.props.projectID + '/settings'}>
+                        <NavItem>Settings</NavItem>
+                    </LinkContainer>
+                </Nav>
+            </Navbar>
         );
     }
 }
