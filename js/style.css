@@ -65,7 +65,16 @@ form#inline{
   margin: 0rem;
 }
 
-
+#state-board{
+  display: inline-block;
+  float: left;
+  width: 300px;
+  margin-top: 80px;
+  margin-right: 20px;
+}
+#inner-panel{
+  padding: 0;
+}
 
 div#content {
     padding:20px;
@@ -92,8 +101,16 @@ margin: 0 auto;
 float: left;
 text-align: left;
 }
+.no-padding{
+  padding: 0!important;
+}
+.no-padding .panel-body{
+  padding: 0!important;
+}
+.rightalign{
+  float:right;
 
-
+}
 #authform h1 {
     font-size: 22px;
     font-weight: 500;
@@ -392,7 +409,7 @@ div.redirect-404 {
 
     padding: 10px;
     border: 1px #ddd solid;
-    
+
     background-color: #f8f8f8;
     border-radius: 2px;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);

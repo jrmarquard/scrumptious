@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from "react-router";
-
+import firebase from 'firebase';
 export default class AppConfiguration extends React.Component {
 
-    
+
     resetPassword = () => {
         firebase.auth().sendPasswordResetEmail(this.state.email)
         .catch((error) => {

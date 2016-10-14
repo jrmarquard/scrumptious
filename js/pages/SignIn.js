@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, hashHistory } from "react-router";
-
+import firebase from 'firebase';
 import { Grid, Row, Col, Panel, Button, FormControl } from "react-bootstrap";
 
 export default class SignIn extends React.Component {
@@ -18,27 +18,27 @@ export default class SignIn extends React.Component {
         return (
             <Grid>
             <Row>
-            <Col 
+            <Col
                 xs={8} xsOffset={2}
                 sm={6} smOffset={3}
                 md={4} mdOffset={4}
                 lg={2} lgOffset={5}
             >
                 <Panel header='Sign in'>
-                    <form 
-                        id="sign-in" 
+                    <form
+                        id="sign-in"
                         onKeyPress={(e) => {
                             if (e.keyCode || e.which == 13) this.signIn()
                         }} >
-                        <FormControl 
+                        <FormControl
                             type="text"
                             onChange={(e) => this.setState({email: e.target.value})}
-                            label="Email" 
+                            label="Email"
                             placeholder="Email"
                         />
-                        <FormControl 
+                        <FormControl
                             type="password"
-                            onChange={(e) => this.setState({password: e.target.value})} 
+                            onChange={(e) => this.setState({password: e.target.value})}
                             placeholder="Password"
                         />
                         <Button
