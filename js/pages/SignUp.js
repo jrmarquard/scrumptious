@@ -29,7 +29,7 @@ export default class SignUp extends React.Component {
                     <form 
                         id="sign-in" 
                         onKeyPress={(e) => {
-                            if (e.keyCode || e.which == 13) this.signIn()
+                            if (e.keyCode || e.which == 13) this.signUp()
                         }} >
                         <FormControl 
                             type="text"

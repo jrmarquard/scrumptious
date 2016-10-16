@@ -1,71 +1,151 @@
 // Needs patching up.
-// Hard to develop with strict rules in place. Likely just going to leave them
-// open for now.
+// Hard to develop with strict rules in place. Going to leave them open for now.
 
 {
   "rules": {
-    // Nobody can write to everything, nobody can read everything. 
-    // These will be overwritten deeper in the rules.
-    ".read": false,
-    ".write": false,
+    // Can only read/write if you are signed in
+    ".read": "auth != null",
+    ".write": "auth != null",
     
     // List of projects
     "projects": {
-      // A project
-      "$projectId": {
-        // Project read/write by anyone in the $projectID/users list
-        // ".read": "root.child.('projects/' + $projectId + '/users/' + auth.uid).exists()",
-        // ".write": "root.child.('projects/' + $projectId + '/users/' + auth.uid).exists()",
-        
-        // temp rules it's getting too late
-        ".read" : "root.child($projectId).child('owner').val() === auth.id",
-        ".write" : "root.child($projectId).child('owner').val() === auth.id",
-        
-        
-        // Projects must have a title, an owner, and a users list
-        ".validate": "newData.hasChildren(['title','users'])",
-        "title": {
-            // title can only be a string and <100 characters
-          ".validate": "newData.isString() && newData.val().length < 100 && newData.val().length > 0",
-        },
-        // List of users in the project
-        "users": {
+      "$projectid": {
+        // Can only read/write if you are a user in this project
+        ".read": "data.child('users' + auth.uid).exists()",
+        ".write":"data.child('users' + auth.uid).exists()",
           
-        }
-      },
+        // Project must have these children
+        ".validate": "newData.hasChildren(['title', 'description', 'createdOn', 'users', 'tickets'])",
+          
+        "title": {
+        	".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50"
+        },
+        "description": {
+        	".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"
+        },
+        "createdOn": {
+          ".validate": "newData.val() < now",
+        },
+        "users": {
+          "$uid": {
+            "role": {
+              
+            }
+          }
+        },
+          
+        // Project tickets
+        "tickets": {
+          "$ticketid": {
+            
+            "assignee": {
+              
+            },
+            "title": {
+        			".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"              
+            },
+            "description": {
+        			".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"
+            },
+            "points": {
+              // Has to be a number between 0 and 3
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 3"
+            },
+            "status": {
+              // Has to be: to_do, in_progress, done, code_review, backlog
+              ".validate": "newData.val() === 'to_do' || newData.val() === 'in_progress' || newData.val() === 'done' || newData.val() === 'code_review' || newData.val() === 'backlog'"
+            },
+            // All other data is rejected
+            "$other": {
+              ".validate": false,
+            }           
+          }          
+        },
+        // All other data is rejected
+        "$other": {
+          ".validate": false,
+        } 
+      }
     },
       
-    // List of users
+  	// List of usernames of every user.
+  	// Used so you can look up other people to message them/add to projects/... etc
+    "usernames": {
+      // Anyone can read from /usernames/
+      // Structure = myUsername: myUserID
+      // ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50 && newData.val()"
+      "$username": {
+        // Can only update a username for your own uid and if the username does not exist yet
+        ".write": "newData.val() === auth.uid && !data.exists()"
+      }
+    },
+      
+    // users holds user data
     "users": {
-      ".read": true,
-      ".write": true,
-      ".indexOn": "userName",
       "$uid": {
-        // User can read/write their own data.
-        ".read": true,
-        ".write": true,
-        // User must have a name
-        ".validate": "newData.hasChild('username')",
+        // Only users can read/write to their own directory
+        ".write": "$uid === auth.uid",
+      	".read": "$uid === auth.uid",
         "name": {
-          ".validate": "newData.isString()",
+          // name has to be a string, and between 0 and 50 characters
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50",
         },
         "username": {
-          ".validate": "newData.isString()",
+					".validate": "root.child('usernames/'+newData.val()).exists()",
         },
-        "notifications": {
-          "$notificationID":{
+        "created": {
+          ".validate": "newData.val() < now"
+        },
+        "projects": {
+          "$projectid": {
             
-            }
-        },
-        // List of projects the user is 'in'
-                "projects": {
+          }
         },
         // All other data is rejected
         "$other": {
           ".validate": false,
         }
-      }      
+        
+      }
     },
+      
+  	"notifications": {
+      "$nid": {
+        // You can only read notifications that you have sent or receieved
+      	".read": "data.child('to').val() === auth.uid || data.child('from').val() === auth.uid",
+      	// You can't write to a notification once it exists. Exception: changing status if you are the recipient
+        ".write": "!data.exists()",
+        // Notification must have these children
+        ".validate": "newData.hasChildren(['from', 'to', 'type', 'status', 'content'])",
+
+        "from": {
+          // Has to be from a valid user
+          ".validate": "root.child('users/' + newData.val()).exists()"
+        },
+        "to": {
+          // Has to be to a valid user
+          ".validate": "root.child('users/' + newData.val()).exists()"          
+        },
+        "type": {
+          // Type has to be a message or a project invite
+          ".validate": "newData.val() === 'message' || newData.val() === 'project-invite'"
+        },
+        "status": {
+          // Status is either pending or complete. 
+          // 'pending' means an unread message or an invite not responded to.
+          // 'complete' means an acknowledged message or an invite accepted/declinded
+					".validate": "newData.val() === 'pending' || newData.val() === 'complete'"
+        },
+        "content": {
+          // Must be > 0 and < 200
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"          
+        },
+        // All other data is rejected
+        "$other": {
+          ".validate": false,
+        }
+      }
+    }
     
   }
 }
