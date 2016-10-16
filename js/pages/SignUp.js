@@ -10,15 +10,12 @@ export default class SignUp extends React.Component {
         .then((user) => {
             // Add userid into users
             var username = 'user' + Date.now();
-            firebase.database().ref('users/' + user.uid)
-            .set({
+            firebase.database().ref('users/' + user.uid).set({
                 name: '',
                 username: username,
             })
             // Add user to usernames/
             firebase.database().ref('usernames/' + username).set(user.uid);
-        })
-        .then(() => {
         })
         .catch((error) => console.log(error));
     };
@@ -38,12 +35,6 @@ export default class SignUp extends React.Component {
                         onKeyPress={(e) => {
                             if (e.keyCode || e.which == 13) this.signUp()
                         }} >
-                        <FormControl 
-                            type="text"
-                            onChange={(e) => this.setState({username: e.target.value})}
-                            label="Username" 
-                            placeholder="Username"
-                        />
                         <FormControl 
                             type="text"
                             onChange={(e) => this.setState({email: e.target.value})}
