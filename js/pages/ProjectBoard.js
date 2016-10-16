@@ -60,7 +60,7 @@ export default class Board extends React.Component {
     }
 
     createTicket = () => {
-        firebase.createTicket('test', 'desc', 'gary oak', 'low','1');
+        firebase.createTicket('test', 'desc', 'backlog', 'Gary Oak','1');
     }
 
     render() {

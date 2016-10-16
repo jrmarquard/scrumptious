@@ -42,7 +42,7 @@ firebase.addCurrentUser = (name, userName) => {
 /**
  *  Create a project.
  *   - Create the project in /projects/
- *   - Create a reference to that project in the user's projects/ 
+ *   - Create a reference to that project in the user's projects/
  *
  *  user: user id of the owner of the project
  *  title: title of the project
@@ -88,7 +88,7 @@ firebase.createProject = (userID, title) => {
 /**
  *  Delete a project.
  *   - Delete the project in /projects/
- *   - Remove the reference to the proejct in every user in that project 
+ *   - Remove the reference to the proejct in every user in that project
  */
 firebase.deleteProject = (projectID) => {
     // Save projectID
@@ -120,7 +120,7 @@ firebase.deleteProject = (projectID) => {
  *   - Update the project with
  */
 firebase.updateProject = () => {
-    // TODO: 
+    // TODO:
 }
 
 /**
@@ -128,29 +128,30 @@ firebase.updateProject = () => {
  *   - Update the project with
  */
 firebase.addUserToProject = (projectID, user) => {
-    // TODO: 
+    // TODO:
 }
 
 
 /***********
  * Tickets
  *
- * Ticket funcionality for current project. 
+ * Ticket funcionality for current project.
  * Current project must be set.
  */
 
 /**
  *  Ticket funcionality for current project. Current project must be set.
  */
-firebase.createTicket = (title, description, state, priority) => {
-    firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets')
-    .push({
-        title: title,
-        description: description,
-        state: state,
-        priority: priority,
-    });
-}
+ firebase.createTicket = (title, description, status, assignee, points) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets')
+     .push({
+         title: title,
+         description: description,
+         status: status,
+         assignee: assignee,
+         points:points
+     });
+ }
 
 firebase.updateTicket = (key, data) => {
     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets/'+key).update(data);
@@ -170,7 +171,7 @@ firebase.getTicket = (key) => {
 }
 
 /*************
- * Listeners 
+ * Listeners
  *
  * Events
  *  - project_change: this fires whenever the project is changed, giving the
@@ -203,5 +204,3 @@ firebase.setCurrentProject = (projectID) => {
         if (f !== null) f(firebase.currentProjectID);
     });
 }
-
-
