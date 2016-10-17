@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { Grid, Col, Row, Panel, PanelGroup, ListGroup, ListGroupItem, FormGroup, FormControl, ControlLabel, Button} from "react-bootstrap";
 
 import Story from '../components/Story.js';
+import NewStoryPanel from '../components/NewStoryPanel.js';
 
 export default class Stories extends React.Component { 
 
@@ -48,15 +49,6 @@ export default class Stories extends React.Component {
         this.storiesRef.off();
     }
 
-    addStory = () => {
-        // Push new story to the project's stories reference
-        this.storiesRef.push({
-            title : this.state.newStoryTitle,
-            description : this.state.newStoryDescription,
-            timeCreated : Date.now()
-        })
-    }
-
     handleStories = (event, storyID, story) => {
         // Add, change, or remove 
         if (event === 'child_added' || event === 'child_changed') {
@@ -83,27 +75,6 @@ export default class Stories extends React.Component {
 
         // If the page is still mounted set a new state
         if (this._isMounted) this.setState({stories:newStories});        
-    }
-
-    getTitleValidation = () => {
-        const length = this.state.newStoryTitle.length;
-        if (length === 0) {
-            return;
-        } else if (length > 0 && length < 50) {
-            return 'success';
-        } else {
-            return 'error';
-        }
-    }
-    getDescriptionValidation = () => {
-        const length = this.state.newStoryDescription.length;
-        if (length === 0) {
-            return;
-        } else if (length > 0 && length < 200) {
-            return 'success';
-        } else {
-            return 'error';
-        }
     }
 
     render() {
@@ -133,39 +104,11 @@ export default class Stories extends React.Component {
                                 </ListGroupItem>
                             </ListGroup>
                         </Panel>
+                        {/* Create new stories panel */}
+                        <NewStoryPanel storiesRef={this.storiesRef}/>
                     </Col>
 
                     <Col lg={10} md={9} xs={8}>
-                        {/* Create new stories panel */}
-                        <PanelGroup accordion>
-                            <Panel header="Add new story" eventKey="1">
-                                    {/* New story title */}
-                                    <FormGroup controlId="formBasicText" validationState={this.getTitleValidation()}>
-                                        <ControlLabel>Title</ControlLabel>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Enter title"
-                                            onChange={(e) => this.setState({newStoryTitle : e.target.value})}
-                                            />
-                                    </FormGroup>
-                                    
-                                    {/* New story description */}
-                                    <FormGroup controlId="formControlsTextarea" validationState={this.getDescriptionValidation()}>
-                                        <ControlLabel>Description</ControlLabel>
-                                        <FormControl 
-                                            componentClass="textarea"
-                                            type="text"
-                                            placeholder="Enter description"
-                                            onChange={(e) => this.setState({newStoryDescription : e.target.value})}
-                                            />
-                                    </FormGroup>
-                                    <Button
-                                        bsStyle="success" 
-                                        onClick={() => this.addStory()}>
-                                        Create new story
-                                    </Button>
-                            </Panel>
-                        </PanelGroup>
 
                         {/* Display new stories here */}
                         <Panel>
