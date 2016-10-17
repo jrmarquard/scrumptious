@@ -1,11 +1,15 @@
 import React from 'react';
 import firebase from 'firebase';
 import EditableTextView from './EditableTextView.js';
-import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, Label} from 'react-bootstrap';
+import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, Label, Popover, OverlayTrigger} from 'react-bootstrap';
+
+
+
 
 export default class Ticket extends React.Component {
     constructor(props) {
         super();
+
     }
 
     deleteTicket = () => {
@@ -18,14 +22,41 @@ export default class Ticket extends React.Component {
         .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
     }
 
+
+
+
     render() {
+      const pop = (
+        <Popover class="popover-ticket" id="popover-trigger-click-root-close">
+            Title: <br/> <strong><EditableTextView
+                value={this.props.ticket.title}
+                onChange={(data) => this.updateField('title', data)}
+            /></strong><br/>
+            Assignee:<br/><strong><EditableTextView
+                value={this.props.ticket.assignee}
+                onChange={(data) => this.updateField('assignee', data)}
+            /></strong><br/>
+            Description: <br/> <strong><EditableTextView
+                value={this.props.ticket.description}
+                onChange={(data) => this.updateField('description', data)}
+            /></strong><br/>
+            Points: <br/> <strong><EditableTextView
+                value={this.props.ticket.points}
+                onChange={(data) => this.updateField('points', data)}
+            /></strong><br/>
+
+          <Button class="deleteTicket" onClick={() => this.deleteTicket()}><Glyphicon glyph="trash"/></Button>
+        </Popover>
+      );
+
+
         return(
-            <ListGroupItem id={this.props.ticket.key}>
+          <OverlayTrigger trigger="click" rootClose placement="right" overlay={pop}>
+          <Button  id={this.props.ticket.id}  class="ticket-box">
                 <h4 class="light-text">{this.props.ticket.title} <Label bsStyle="info" class="rightalign">{this.props.ticket.points}</Label></h4>
-                <h5>Assignee: <Label bsStyle="default">{this.props.ticket.assignee}</Label></h5>
-                <Button onClick={() => this.deleteTicket()}><Glyphicon glyph="trash"/></Button>
-                <Button><Glyphicon glyph="edit"/></Button>
-            </ListGroupItem>
+                <h5><Label bsStyle="default">{this.props.ticket.assignee}</Label></h5>
+          </Button>
+          </OverlayTrigger>
         );
     }
 

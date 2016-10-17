@@ -152,6 +152,16 @@ firebase.addUserToProject = (projectID, user) => {
          points:points
      });
  }
+ firebase.createStatus = (status,order) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
+     .push({
+         status:status,
+         order:order
+     });
+ }
+ firebase.updateStatus = (data) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/status/'+key).update(data)
+ }
 
 firebase.updateTicket = (key, data) => {
     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets/'+key).update(data);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router";
 import firebase from 'firebase';
-import { Panel, ListGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Panel, ListGroup, Button, Glyphicon, Popover, OverlayTrigger, Form, FieldGroup, FormGroup, ControlLabel, FormControl, Modal, Col } from 'react-bootstrap';
 
 import Ticket from "../components/Ticket.js";
 
@@ -57,11 +57,36 @@ export default class Board extends React.Component {
         };
 
         this.setState( {tickets : this.tickets} );
+
+        this.setState({
+           showModal: false,
+           newTicketTitle: 'Add title',
+           newTicketDescription: 'Add Description',
+           newTicketAssignee: 'Add Assignee',
+           newTicketPoints: 1,
+           newTicketStatus: 'Backlog'
+          });
     }
 
-    createTicket = () => {
-        firebase.createTicket('test', 'desc', 'backlog', 'Gary Oak','1');
+    createTicket = (title,desc,status,assignee,points) => {
+        var key = firebase.createTicket(this.state.newTicketTitle,this.state.newTicketDescription,this.state.newTicketStatus,this.state.newTicketAssignee,this.state.newTicketPoints);
+        this.setState({
+           showModal: false,
+           newTicketTitle: 'Add title',
+           newTicketDescription: 'Add Description',
+           newTicketAssignee: 'Add Assignee',
+           newTicketPoints: 1,
+           newTicketStatus: 'Backlog'
+          });
     }
+
+     close = () => {
+       this.setState({ showModal: false });
+     }
+
+     open = () => {
+       this.setState({ showModal: true });
+     }
 
     render() {
 
@@ -98,11 +123,81 @@ export default class Board extends React.Component {
       for (var j in TicketComponents){
         print.push(<h4><Panel id="state-board" class="no-padding" header={states[j]}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4>);
       }
+      var stateSelect = [];
+      for(var k in states){
+        stateSelect.push(<option value={states[k]}>{states[k]}</option>);
+      }
 
         return (
             <div>
-                <Button class="rightalign" onClick={() => this.createTicket()}><Glyphicon glyph="plus"/> Create Ticket</Button>
-                <div id="tickets">{print}</div>
+            <Form inline class="add-padding">
+              <FormControl
+                type="text"
+                label="New Board"
+                placeholder="Enter a board name"
+                onChange={(e) => this.setState({newBoard: e.target.value})}
+              />
+              <Button class=
+              "add-ticket" onClick={() => this.createTicket(this.state.newBoard)}>Create Board</Button>
+              <Button
+                bsStyle="info"
+                onClick={this.open}
+              ><Glyphicon glyph="plus"/> Create Ticket</Button>
+            </Form>
+            <div id="tickets">{print}</div>
+
+
+
+
+          <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>Create New Ticket</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form horizontal>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>
+                  Title
+                </Col>
+                <Col sm={10}>
+                  <FormControl onChange={(e) => this.setState({newTicketTitle: e.target.value})} type="text" placeholder="Title of ticket" />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>
+                  Assignee
+                </Col>
+                <Col sm={10}>
+                  <FormControl onChange={(e) => this.setState({newTicketAssignee: e.target.value})} type="text" placeholder="Assign a ticket to a person" />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>
+                  Description
+                </Col>
+                <Col sm={10}>
+                  <FormControl onChange={(e) => this.setState({newTicketDescription: e.target.value})} type="text" componentClass="textarea" placeholder="Enter a short description" />
+                </Col>
+              </FormGroup>
+              <FormGroup controlId="formControlsSelect">
+                <Col componentClass={ControlLabel} sm={2}>
+                  Select a board
+                </Col>
+                <Col sm={10}>
+                  <FormControl   onChange={(e) => this.setState({newTicketStatus: e.target.value})} componentClass="select">
+                    {stateSelect}
+                  </FormControl>
+                </Col>
+              </FormGroup>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.close}>Close</Button>
+            <Button class="add-ticket" onClick={() => this.createTicket()}><Glyphicon glyph="plus"/> Create Ticket</Button>
+          </Modal.Footer>
+          </Modal>
+
+
             </div>
         );
     }

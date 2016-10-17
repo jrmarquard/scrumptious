@@ -10,7 +10,7 @@ body {
 }
 
 div#app {
-    background: #EEE;
+    background: #FFF;
     margin: auto;
 }
 
@@ -130,6 +130,23 @@ div.ticket {
 div.ticket > * {
     display: block;
 }
+.ticket-box{
+  width:100%;
+  text-align: left;
+}
+.add-padding{
+  padding: 10px;
+  float: right;
+  
+}
+.deleteTicket{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.popover-ticket{
+min-width: 200px;
+}
 
 div.project-settings-panel {
     padding: 10px;
@@ -149,6 +166,15 @@ div.notification {
 }
 .navbar-default .navbar-brand {
   color: #e2f3f7;
+}
+.board-box{
+  overflow-x: auto;
+}
+.ticket-edit-box{
+  float:right;
+  background: #b9e0e8;
+  width:300px;
+  height: 100vh;
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
