@@ -153,11 +153,12 @@ firebase.addUserToProject = (projectID, user) => {
      });
  }
  firebase.createStatus = (status,order) => {
-     firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
+     key = firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
      .push({
          status:status,
          order:order
      });
+     return key.getKey();
  }
  firebase.updateStatus = (data) => {
      firebase.database().ref('projects/'+firebase.currentProjectID+'/status/'+key).update(data)
