@@ -2,7 +2,9 @@ import firebase from 'firebase';
 import React from 'react';
 import { Link } from "react-router";
 
-import EditableTextView from '../components/EditableTextView.js'
+import EditableTextView from '../components/EditableTextView.js';
+
+import { Panel } from "react-bootstrap";
 
 export default class User extends React.Component {
     constructor(props) {
@@ -32,6 +34,7 @@ export default class User extends React.Component {
     userListener = (data) => {
         var name = data.val().name;
         var username = data.val().username;
+
         this.setState({ 
             name: name,
             username: username,
@@ -57,32 +60,35 @@ export default class User extends React.Component {
 
     render() {
         return (
-            <div>
-                <h1>Your Profile</h1>
-                <h3>Name: </h3>
-                <EditableTextView
-                    value={this.state.name}
-                    onChange={(data) => this.updateField('name', data)}
-                />
-                
-                <h3>UserName: </h3>
-                <EditableTextView
-                    value={this.state.username}
-                    onChange={(data) => this.updateField('username', data)}
-                />
-
-                <h3>Send Message</h3>
-                <input 
-                    onChange={(e) => {
-                        this.setState( { message : e.target.value } );
-                    }}
-                    onKeyPress={(e) => {
-                        if (e.keyCode || e.which == 13) this.sendMessage();
-                    }}
-                    value={this.state.message}
-                />
-                <button onClick={() => this.sendMessage()}>Send Message</button>
-
+            <div class='profile'>
+                <Panel>
+                    <div>
+                        <h2>{this.state.name}</h2>
+                    </div>
+                    <div>
+                        <h3>{this.state.username}</h3>
+                    </div>
+                    <div>
+                        <Link to='/settings'>
+                            <button>Edit your profile</button>
+                        </Link>
+                    </div>
+                </Panel>
+                <Panel>
+                    <div>
+                        <h3>Send Message</h3>
+                        <input 
+                            onChange={(e) => {
+                                this.setState( { message : e.target.value } );
+                            }}
+                            onKeyPress={(e) => {
+                                if (e.keyCode || e.which == 13) this.sendMessage();
+                            }}
+                            value={this.state.message}
+                        />
+                        <button onClick={() => this.sendMessage()}>Send Message</button>
+                    </div>
+                </Panel>
             </div>
         );
     }

@@ -371,8 +371,9 @@ form#sign-in * {
     margin: 0.5rem;
 }
 div.panel div.panel-heading {
-    font-size: 2rem;
+    font-size: 3rem;
 }
+
 
 div.projects-list-item {
     display: block;

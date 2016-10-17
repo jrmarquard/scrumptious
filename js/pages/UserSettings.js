@@ -2,19 +2,57 @@ import firebase from 'firebase'
 import React from 'react';
 import { Link } from "react-router";
 
-import { Panel } from "react-bootstrap";
+import { Panel, ListGroup, ListGroupItem } from "react-bootstrap";
+
+import EditableTextView from '../components/EditableTextView.js';
 
 export default class AppConfiguration extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            authenticated: false
+            authenticated: false,
+            name : '',
+            username : ''
         };
         this.authPassword = '';
         this.newPassword = '';
+        this.userID = '';
+        this._isMounted = false;
+    }
+
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) this.userID = user.uid;
+            // Definte firebase reference to the user's data
+            this.userRef = firebase.database().ref('users/'+this.userID);
+
+            // Attach a listener to all user's data
+            this.userRef.on('value', this.userListener);
+            this._isMounted = true;
+
+        });
+    }
+
+    componentWillUnmount() {
+        if (this._isMounted) this.userRef.off();
+    }
+
+    userListener = (data) => {
+        var name = data.val().name;
+        var username = data.val().username;
+
+        this.setState({ 
+            name: name,
+            username: username,
+        });
     }
     
+    updateField = (field, value) => {
+        firebase.database().ref('users/'+this.userID).child(field).set(value)
+        .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
+    }
+
     resetPassword = () => {
         var user = firebase.auth().currentUser;
 
@@ -57,36 +95,58 @@ export default class AppConfiguration extends React.Component {
     }
 
     render() {
-        var statusMessage;
+        var authenticationStatus;
         if (!this.state.authenticated) {
-            statusMessage = 'Authentication required';
+            authenticationStatus = 'Not authenticated';
         } else {
-            statusMessage = 'Authentication sucessful';
+            authenticationStatus = 'Authentication sucessful';
         }
         return (
             <Panel>
                 <h1>Settings</h1>
                 <Panel>
-                    <div>
-                        {statusMessage} 
-                        <input 
-                            type="password"
-                            onChange={(e) => this.authPassword = e.target.value}
-                        />
-                        <button onClick={() => this.authenticateUser()}>Authenticate Account</button>
-
-                    </div>
-                    <div>
-                        New Password:
-                        <input 
-                            type="password"
-                            onChange={(e) => this.newPassword = e.target.value}
-                        />
-                        <button disabled={!this.state.authenticated} onClick={() => this.resetPassword()}>Reset Password</button>
-                    </div>
-                    <div>
-                        <button disabled={!this.state.authenticated} onClick={() => this.deleteUser()}>Delete User</button>
-                    </div>
+                    <h3>Profile Settings</h3>
+                    <ListGroup fill>
+                        <ListGroupItem>
+                            <h3>Name: </h3>
+                            <EditableTextView
+                                value={this.state.name}
+                                onChange={(data) => this.updateField('name', data)}
+                            />
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <h3>UserName: </h3>
+                            <EditableTextView
+                                value={this.state.username}
+                                onChange={(data) => this.updateField('username', data)}
+                            />
+                        </ListGroupItem>
+                    </ListGroup>
+                </Panel>
+                <Panel>
+                    <h3>Account Settings</h3>
+                    <ListGroup fill>
+                        <ListGroupItem>
+                            <h4>Authentication [{authenticationStatus}]</h4>
+                            <p>Authentication is required to change your password or delete your account.</p>
+                            <input 
+                                type="password"
+                                onChange={(e) => this.authPassword = e.target.value}
+                            />
+                            <button onClick={() => this.authenticateUser()}>Authenticate Account</button>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <h4>New Password</h4>
+                            <input 
+                                type="password"
+                                onChange={(e) => this.newPassword = e.target.value}
+                            />
+                            <button disabled={!this.state.authenticated} onClick={() => this.resetPassword()}>Reset Password</button>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <button disabled={!this.state.authenticated} onClick={() => this.deleteUser()}>Delete User</button>
+                        </ListGroupItem>
+                    </ListGroup>
                 </Panel>
             </Panel>
         );

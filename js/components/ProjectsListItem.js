@@ -51,11 +51,16 @@ export default class ProjectsListItem extends React.Component {
     }
 
     render() {
-
         return (
             <div class='projects-list-item'>
-                <Link to={'/project/' + this.props.projectID + '/overview'}><div class='projects-list-item-header'>{this.state.projectTitle}</div></Link>
-                <div>Number of users: {this.state.projectUserCount}</div>
+                <Link to={'/project/' + this.props.projectID + '/overview'}>
+                    <div class='projects-list-item-header'>
+                        {this.state.projectTitle}
+                    </div>
+                </Link>
+                <div>
+                    Number of users: {this.state.projectUserCount}
+                </div>
             </div>
         );
     }
