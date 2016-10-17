@@ -29,9 +29,9 @@ export default class Notifications extends React.Component {
         this.authUnsub = firebase.auth().onAuthStateChanged((user) => {  
             this.userNotificationsRef = firebase.database().ref('users/'+user.uid+'/notifications');
 
-            this.userNotificationsRef.on('child_added', (data) => this.handleNotifications('added', data.key, data.val()));
-            this.userNotificationsRef.on('child_removed', (data) => this.handleNotifications('removed', data.key, data.val()));
-            this.userNotificationsRef.on('child_changed', (data) => this.handleNotifications('changed', data.key, data.val()));
+            this.userNotificationsRef.on('child_added', (data) => this.handleNotifications('child_added', data.key, data.val()));
+            this.userNotificationsRef.on('child_changed', (data) => this.handleNotifications('child_changed', data.key, data.val()));
+            this.userNotificationsRef.on('child_removed', (data) => this.handleNotifications('child_removed', data.key, data.val()));
         });
 	}
 
@@ -42,9 +42,9 @@ export default class Notifications extends React.Component {
 
     handleNotifications = (event, nofificationID, notification) => {
         // Add or remove notification from component tracking
-        if (event === 'added' || event === 'changed') {
+        if (event === 'child_added' || event === 'child_changed') {
             this.notifications[nofificationID] = notification;    
-        } else if (event === 'removed') {
+        } else if (event === 'child_removed') {
             delete this.notifications[nofificationID];
         }
 

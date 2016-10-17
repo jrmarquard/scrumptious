@@ -21,14 +21,14 @@ export default class User extends React.Component {
 
     componentDidMount() {
         // Definte firebase reference to the user's data
-        this.reference = firebase.database().ref('users/'+this.userID);
+        this.userRef = firebase.database().ref('users/'+this.userID);
 
         // Attach a listener to all user's data
-        this.reference.on('value', this.userListener);
+        this.userRef.on('value', this.userListener);
     }
 
     componentWillUnmount() {
-        this.reference.off();
+        this.userRef.off();
     }
 
     userListener = (data) => {

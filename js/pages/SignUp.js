@@ -19,6 +19,7 @@ export default class SignUp extends React.Component {
         })
         .catch((error) => console.log(error));
     };
+    
     render() {
         return (
             <Grid>
@@ -37,14 +38,13 @@ export default class SignUp extends React.Component {
                         }} >
                         <FormControl 
                             type="text"
-                            onChange={(e) => this.setState({email: e.target.value})}
-                            label="Email" 
                             placeholder="Email"
+                            onChange={(e) => this.setState({email: e.target.value})}
                         />
                         <FormControl 
                             type="password"
-                            onChange={(e) => this.setState({password: e.target.value})} 
                             placeholder="Password"
+                            onChange={(e) => this.setState({password: e.target.value})} 
                         />
                         <Button
                             onClick={this.signUp}>
