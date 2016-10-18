@@ -23,21 +23,31 @@ export default class Notifications extends React.Component {
         this._isMounted = true;
 
         // Set reference to firebase root in case it unmounts too quickly
-        this.userNotificationsRef = firebase.database().ref('/');
+        this.notificationsRef = firebase.database().ref('notifications');
 
         // When the auth state changes, subscribte to firebase references
-        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {  
-            this.userNotificationsRef = firebase.database().ref('users/'+user.uid+'/notifications');
+        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {
 
-            this.userNotificationsRef.on('child_added', (data) => this.handleNotifications('child_added', data.key, data.val()));
-            this.userNotificationsRef.on('child_changed', (data) => this.handleNotifications('child_changed', data.key, data.val()));
-            this.userNotificationsRef.on('child_removed', (data) => this.handleNotifications('child_removed', data.key, data.val()));
+            this.notificationsRef.orderByChild('to').equalTo(user.uid)
+                .on('child_added', (data) => this.handleNotifications('child_added', data.key, data.val()));
+
+            this.notificationsRef.orderByChild('to').equalTo(user.uid)
+                .on('child_changed', (data) => this.handleNotifications('child_changed', data.key, data.val()));
+            
+            this.notificationsRef.orderByChild('to').equalTo(user.uid)
+                .on('child_removed', (data) => this.handleNotifications('child_removed', data.key, data.val()));
+                
+            // this.notificationsRef = firebase.database().ref('users/'+user.uid+'/notifications');
+
+            // this.notificationsRef.on('child_added', (data) => this.handleNotifications('child_added', data.key, data.val()));
+            // this.notificationsRef.on('child_changed', (data) => this.handleNotifications('child_changed', data.key, data.val()));
+            // this.notificationsRef.on('child_removed', (data) => this.handleNotifications('child_removed', data.key, data.val()));
         });
 	}
 
 	componentWillUnmount() {
         this._isMounted = false;
-        this.userNotificationsRef.off();
+        this.notificationsRef.off();
 	}
 
     handleNotifications = (event, nofificationID, notification) => {
@@ -47,14 +57,22 @@ export default class Notifications extends React.Component {
         } else if (event === 'child_removed') {
             delete this.notifications[nofificationID];
         }
-
+        
         // Render notifications out
         var newNotifications = [];
         for (var id in this.notifications) {
             var n = this.notifications[id];
 
             newNotifications.push(
-                <Notification key={id} id={id} type={n.type} content={n.content} read={n.read} />
+                <Notification 
+                    key={id}
+                    id={id}
+                    to={n.to}
+                    from={n.from}
+                    type={n.type} 
+                    content={n.content} 
+                    status={n.status} 
+                    />
             )
         }
 

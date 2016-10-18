@@ -41,16 +41,13 @@ export default class User extends React.Component {
         });
     }
 
-    updateField = (field, value) => {
-        firebase.database().ref('users/'+this.userID).child(field).set(value)
-        .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
-    }
-
     sendMessage = () => {        
-        firebase.database().ref('users/'+this.userID+'/notifications').push({
+        firebase.database().ref('notifications').push({
+            to: this.userID,
+            from: firebase.auth().currentUser.uid,
             type: 'message',
             content: this.state.message,
-            read: false,
+            status: 'unread',
         });
 
         this.setState({

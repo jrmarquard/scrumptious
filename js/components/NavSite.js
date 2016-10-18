@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Nav, Navbar, NavDropdown, MenuItem, NavItem,FormGroup } from 'react-bootstrap';
+import { Button, Nav, Navbar, NavDropdown, MenuItem, NavItem, FormGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 export default class NNav extends React.Component {

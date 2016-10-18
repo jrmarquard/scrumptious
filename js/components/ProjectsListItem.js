@@ -14,7 +14,6 @@ export default class ProjectsListItem extends React.Component {
         super();
         this.state = {
             projectTitle : '',
-            projectUserCount : ''
         }
     }
 
@@ -30,7 +29,7 @@ export default class ProjectsListItem extends React.Component {
             // Watches for projects in userID/projects/ 
             this.projectRef = firebase.database().ref('projects/'+this.props.projectID);
 
-            this.projectRef.on('value', (data) => this.handleProject(data.key, data.val()));
+            this.projectRef.on('value', (data) => this.handleProject('value', data.key, data.val()));
         });
     }
 
@@ -39,15 +38,8 @@ export default class ProjectsListItem extends React.Component {
         this.projectRef.off();
     }
 
-    handleProject = (id, data) => {
-        var count = 0;
-        for (var u in data.users) {
-            count++;
-        }
-        this.setState({
-            projectTitle: data.title,
-            projectUserCount: count 
-        });
+    handleProject = (event, id, data) => {
+        if (this._isMounted) this.setState({ projectTitle: data.title});
     }
 
     render() {
@@ -58,9 +50,6 @@ export default class ProjectsListItem extends React.Component {
                         {this.state.projectTitle}
                     </div>
                 </Link>
-                <div>
-                    Number of users: {this.state.projectUserCount}
-                </div>
             </div>
         );
     }
