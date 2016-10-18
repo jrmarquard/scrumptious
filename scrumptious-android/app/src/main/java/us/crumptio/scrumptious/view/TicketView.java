@@ -1,6 +1,7 @@
 package us.crumptio.scrumptious.view;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -12,7 +13,9 @@ import us.crumptio.scrumptious.model.Ticket;
 /**
  * Created by josh on 2/10/2016.
  */
-public class TicketView extends BindableRelativeLayout<Ticket> {
+public class TicketView extends BindableRelativeLayout<Ticket> implements View.OnClickListener {
+
+    public static final int CLICKED = 1;
 
     @BindView(R.id.title)
     TextView mTitle;
@@ -38,6 +41,7 @@ public class TicketView extends BindableRelativeLayout<Ticket> {
     @Override
     public void onViewInflated() {
         ButterKnife.bind(this);
+        setOnClickListener(this);
     }
 
     @Override
@@ -49,4 +53,8 @@ public class TicketView extends BindableRelativeLayout<Ticket> {
         mDescription.setText(ticket.getDescription());
     }
 
+    @Override
+    public void onClick(View view) {
+        notifyItemAction(CLICKED, mTitle);
+    }
 }

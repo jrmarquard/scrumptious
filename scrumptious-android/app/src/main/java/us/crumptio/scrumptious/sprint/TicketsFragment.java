@@ -18,11 +18,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.nlopez.smartadapters.SmartAdapter;
 import io.nlopez.smartadapters.adapters.RecyclerMultiAdapter;
+import io.nlopez.smartadapters.utils.ViewEventListener;
 import us.crumptio.scrumptious.R;
+import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.model.Ticket;
 import us.crumptio.scrumptious.repositories.FirebaseTicketsRepository;
 import us.crumptio.scrumptious.repositories.TicketsRepository;
 import us.crumptio.scrumptious.view.TicketView;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by josh on 2/10/2016.
@@ -111,6 +115,14 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
         mList.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = SmartAdapter.empty()
                 .map(Ticket.class, TicketView.class)
+                .listener(new ViewEventListener<Ticket>() {
+                    @Override
+                    public void onViewEvent(int actionId, Ticket ticket, int position, View view) {
+                        if (actionId == TicketView.CLICKED) {
+                            CreateTicketActivity.openActivity(getActivity(), mProjectId);
+                        }
+                    }
+                })
                 .into(mList);
     }
 

@@ -3,7 +3,7 @@ package us.crumptio.scrumptious.createticket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 import android.widget.EditText;
 
@@ -39,7 +39,7 @@ public class CreateTicketActivity extends BaseActivity {
 
     private String mProjectId = null;
 
-    public static void openActivity(AppCompatActivity activity, String projectId) {
+    public static void openActivity(FragmentActivity activity, String projectId) {
         Intent intent = new Intent(activity, CreateTicketActivity.class);
         intent.putExtra(ARG_PROJECT_ID, projectId);
         activity.startActivity(intent);
