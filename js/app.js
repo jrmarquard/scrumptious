@@ -25,6 +25,10 @@ import SignIn from "./pages/SignIn.js";
 import UserProfile from "./pages/UserProfile.js";
 import UserSettings from "./pages/UserSettings.js";
 
+// Components
+import ProjectSettingsOptions from "./components/ProjectSettingsOptions.js";
+import ProjectSettingsUsers from "./components/ProjectSettingsUsers.js";
+
 // Scrumptious
 class Scrumptious extends React.Component {
     
@@ -38,13 +42,17 @@ class Scrumptious extends React.Component {
                     <Route path="settings" component={UserSettings} />
                     <Route path="user/:userID" component={UserProfile} />
                     <Route path="project/:projectID" component={ProjectContent}>
-                        <Redirect from="" to="home" />
-                        <Route path='overview' component={ProjectOverview} />
+                        <IndexRedirect from="" to="overview" />
+                        <Route path="overview" component={ProjectOverview} />
                         <Route path="board" component={ProjectBoard} />
                         <Route path="sprint/:sprintID" component={ProjectSprint} />
                         <Route path="sprints" component={ProjectSprints} />
                         <Route path="stories" component={ProjectStories} />
-                        <Route path="settings" component={ProjectSettings} />
+                        <Route path="settings" component={ProjectSettings} >
+                            <IndexRedirect from="" to="options" />
+                            <Route path="options" component={ProjectSettingsOptions} />
+                            <Route path="users" component={ProjectSettingsUsers} />
+                        </Route>
                     </Route>
                     <Route path="404" component={Redirect404} />
                 </Route>

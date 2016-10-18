@@ -63,7 +63,26 @@ export default class Projects extends React.Component {
     }
 
     createProject = () => {
-        firebase.createProject(firebase.getCurrentUser().uid, this.state.newProjectName);
+        //firebase.createProject(firebase.getCurrentUser().uid, this.state.newProjectName);
+
+        var userID = firebase.auth().currentUser.uid;
+
+        var userData = {
+            role: 'owner',
+            status: 'accepted'
+        }
+
+        var projectData = {
+            title: this.state.newProjectName,
+            timeCreated: Date.now(),
+            users: {},
+        }
+        projectData.users[userID] = userData;
+
+        var projectRef = firebase.database().ref('projects').push(projectData);
+
+        firebase.database().ref('users/'+userID+'/projects/'+projectRef.key).set(userData);
+
         this.setState({newProjectName : ''});
     }
 

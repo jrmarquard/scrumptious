@@ -25,20 +25,23 @@ export default class Stories extends React.Component {
         this._isMounted = false;
     }
 
-    componentDidMount = () => {
-        // Set isMounted flag to true
-        this._isMounted = true;
-
+    componentWillMount = () => {
         // Get projectID from the url
         this.projectID = this.props.params.projectID;
 
         // Firebase reference to project stories
         this.storiesRef = firebase.database().ref('projects/'+this.projectID+'/stories');
+    }
+
+    componentDidMount = () => {
 
         // Start listening to events from the project's' stories reference
         this.storiesRef.on('child_added', data => this.handleStories('child_added', data.key, data.val()));
         this.storiesRef.on('child_changed', data => this.handleStories('child_changed', data.key, data.val()));
         this.storiesRef.on('child_removed', data => this.handleStories('child_removed', data.key, data.val()));
+
+        // Set isMounted flag to true
+        this._isMounted = true;
     }
 
     coomponentWillUnmount() {
@@ -74,7 +77,7 @@ export default class Stories extends React.Component {
         }
 
         // If the page is still mounted set a new state
-        if (this._isMounted) this.setState({stories:newStories});        
+        if (!this._isMounted) this.setState({stories:newStories});        
     }
 
     render() {

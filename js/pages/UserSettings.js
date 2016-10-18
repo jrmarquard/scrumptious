@@ -2,7 +2,7 @@ import firebase from 'firebase'
 import React from 'react';
 import { Link } from "react-router";
 
-import { Panel, ListGroup, ListGroupItem } from "react-bootstrap";
+import { FormGroup, ControlLabel, FormControl, Button, Panel, ListGroup, ListGroupItem } from "react-bootstrap";
 
 import EditableTextView from '../components/EditableTextView.js';
 
@@ -13,7 +13,8 @@ export default class AppConfiguration extends React.Component {
         this.state = {
             authenticated: false,
             name : '',
-            username : ''
+            username : '',
+            oldUsername : '',
         };
         this.authPassword = '';
         this.newPassword = '';
@@ -23,14 +24,15 @@ export default class AppConfiguration extends React.Component {
 
     componentDidMount() {
         firebase.auth().onAuthStateChanged((user) => {
-            if (user) this.userID = user.uid;
-            // Definte firebase reference to the user's data
-            this.userRef = firebase.database().ref('users/'+this.userID);
+            if (user) {
+                this.userID = user.uid;
+                // Definte firebase reference to the user's data
+                this.userRef = firebase.database().ref('users/'+this.userID);
 
-            // Attach a listener to all user's data
-            this.userRef.on('value', this.userListener);
-            this._isMounted = true;
-
+                // Attach a listener to all user's data
+                this.userRef.on('value', this.userListener);
+                this._isMounted = true;
+            }
         });
     }
 
@@ -45,12 +47,18 @@ export default class AppConfiguration extends React.Component {
         this.setState({ 
             name: name,
             username: username,
+            oldUsername: username
         });
     }
-    
-    updateField = (field, value) => {
-        firebase.database().ref('users/'+this.userID).child(field).set(value)
-        .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
+
+    updateName = () => {
+        firebase.database().ref('users/'+this.userID+'/name').set(this.state.name);
+    }
+
+    updateUsername = () => {
+        firebase.database().ref('users/'+this.userID+'/username').set(this.state.username);
+        firebase.database().ref('usernames/'+this.state.oldUsername).remove();
+        firebase.database().ref('usernames/'+this.state.username).set(this.userID);
     }
 
     resetPassword = () => {
@@ -102,27 +110,47 @@ export default class AppConfiguration extends React.Component {
             authenticationStatus = 'Authentication sucessful';
         }
         return (
-            <Panel>
-                <h1>Settings</h1>
+            <div>
                 <Panel>
                     <h3>Profile Settings</h3>
                     <ListGroup fill>
+                    
+                        {/* Name */}
                         <ListGroupItem>
-                            <h3>Name: </h3>
-                            <EditableTextView
-                                value={this.state.name}
-                                onChange={(data) => this.updateField('name', data)}
-                            />
+                            <FormGroup controlId="formControlsTextarea">
+                                <ControlLabel>Name</ControlLabel>
+                                <FormControl 
+                                    type="text"
+                                    placeholder="Enter username"
+                                    value={this.state.name}
+                                    onChange={(e) => this.setState({name : e.target.value})}
+                                    onKeyPress={(e) => {if (e.keyCode || e.which == 13) this.updateName()}}
+                                    />
+                            </FormGroup>
+                            <Button bsStyle='success' onClick={() => this.updateUsername()}>
+                                Save
+                            </Button>
                         </ListGroupItem>
+
+                        {/* Username */}
                         <ListGroupItem>
-                            <h3>UserName: </h3>
-                            <EditableTextView
-                                value={this.state.username}
-                                onChange={(data) => this.updateField('username', data)}
-                            />
+                            <FormGroup controlId="formControlsTextarea">
+                                <ControlLabel>Username</ControlLabel>
+                                <FormControl 
+                                    type="text"
+                                    placeholder="Enter username"
+                                    value={this.state.username}
+                                    onChange={(e) => this.setState({username : e.target.value})}
+                                    onKeyPress={(e) => {if (e.keyCode || e.which == 13) this.updateUsername()}}
+                                    />
+                            </FormGroup>
+                            <Button bsStyle='success' onClick={() => this.updateUsername()}>
+                                Save
+                            </Button>
                         </ListGroupItem>
                     </ListGroup>
                 </Panel>
+
                 <Panel>
                     <h3>Account Settings</h3>
                     <ListGroup fill>
@@ -148,7 +176,7 @@ export default class AppConfiguration extends React.Component {
                         </ListGroupItem>
                     </ListGroup>
                 </Panel>
-            </Panel>
+            </div>
         );
     }
 
