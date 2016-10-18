@@ -42,7 +42,6 @@ nav#nav-project div {
 }
 #state-board{
   display: inline-block;
-  float: left;
   width: 200px;
   margin-top: 50px;
   margin-right: 20px;
@@ -60,7 +59,7 @@ form{
   padding-right: 2rem;
 }
 form#inline{
-  display: inline-block;;
+  display: inline-block;
 }
 .margins{
   margin: 0rem;
@@ -82,8 +81,6 @@ div#project-ui {
 }
 .navbar{
   border-radius: 0;
-}
-div#project-page {
 }
 .container{
   margin-left:0;
@@ -173,7 +170,7 @@ div.notification {
   background-color: #e2f3f7;
 }
 .navbar-default .navbar-collapse,
-.navbar-default .navbar-form {.navbar-default {
+.navbar-default .navbar-form .navbar-default {
   background-color: #62d0e8;
   border-color: #3c94a7;
 }
@@ -242,8 +239,7 @@ div.notification {
     background-color: #3c94a7;
   }
 }
-  border-color: #e2f3f7;
-}
+
 .navbar-default .navbar-link {
   color: #e2f3f7;
 }
@@ -367,4 +363,42 @@ div.notification {
 }
 .navbar-custom .navbar-link:hover {
   color: #ffffff;
+}
+
+/* John learning things */
+form#sign-in * {
+    display: inline-block;
+    margin: 0.5rem;
+}
+div.panel div.panel-heading {
+    font-size: 3rem;
+}
+
+
+div.projects-list-item {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px #ddd solid;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+div.projects-list-item-header {
+    font-size: 2rem;
+}
+div.redirect-404 {
+    width: 200px;
+    text-align: center;
+    margin: 0 auto;
+
+    padding: 10px;
+    border: 1px #ddd solid;
+    
+    background-color: #f8f8f8;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+div.nav-separator {
+    border-left:#232323;
+    height: 100%;
 }

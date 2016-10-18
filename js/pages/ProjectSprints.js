@@ -15,15 +15,10 @@ export default class Sprints extends React.Component {
     componentWillUnmount() {
     }
 
-    loadTicket = (data) => {
-
-    }
-
     render() {
         return (
             <div>
                 <h1>Sprints</h1>
-                <h3>{this.props.params.sprint}</h3>
             </div>
         );
     }

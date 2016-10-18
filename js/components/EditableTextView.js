@@ -4,7 +4,7 @@ import React from 'react';
  *  Text field that can be edited on double click, and when
  *  the value changes it calls the function provided in props.onChange
  */
-export default class EditableTextViewImproved extends React.Component {
+export default class EditableTextView extends React.Component {
     // Required props for this Component
     static propTypes = {
         value: React.PropTypes.any.isRequired,

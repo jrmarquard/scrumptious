@@ -10,37 +10,53 @@ import ReactDOM from "react-dom";
 import { Router, Route, Redirect, IndexRoute, IndexRedirect, hashHistory } from "react-router";
 
 // Pages
-import About from "./pages/About.js";
 import Home from "./pages/Home.js";
 import Interface from "./pages/Interface.js";
-import Projects from "./pages/Projects.js";
 import ProjectBoard from "./pages/ProjectBoard.js";
 import ProjectContent from "./pages/ProjectContent.js";
 import ProjectOverview from "./pages/ProjectOverview.js";
 import ProjectSettings from "./pages/ProjectSettings.js";
+import ProjectSprint from "./pages/ProjectSprint.js";
 import ProjectSprints from "./pages/ProjectSprints.js";
 import ProjectStories from "./pages/ProjectStories.js";
-import User from "./pages/User.js";
+import Redirect404 from "./pages/Redirect404.js";
+import SignUp from "./pages/SignUp.js";
+import SignIn from "./pages/SignIn.js";
+import UserProfile from "./pages/UserProfile.js";
+import UserSettings from "./pages/UserSettings.js";
+
+// Components
+import ProjectSettingsOptions from "./components/ProjectSettingsOptions.js";
+import ProjectSettingsUsers from "./components/ProjectSettingsUsers.js";
 
 // Scrumptious
 class Scrumptious extends React.Component {
+    
     render() {
         return (
             <Router history={hashHistory}>
-                <Route path="/" component={Interface}>  
-                    <IndexRedirect to="home" />
-                    <Route path="home" component={Home} />
-                    <Route path="projects" component={Projects} />
-                    <Route path="about" component={About} />
-                    <Route path="user(/:userID)" component={User} />
+                <Route path="/" component={Interface}>
+                    <IndexRoute component={Home} />
+                    <Route path="signup" component={SignUp} />
+                    <Route path="signin" component={SignIn} />
+                    <Route path="settings" component={UserSettings} />
+                    <Route path="user/:userID" component={UserProfile} />
                     <Route path="project/:projectID" component={ProjectContent}>
-                        <IndexRoute component={ProjectOverview} />
+                        <IndexRedirect from="" to="overview" />
+                        <Route path="overview" component={ProjectOverview} />
                         <Route path="board" component={ProjectBoard} />
-                        <Route path="sprints(/:sprintID)" component={ProjectSprints} />
-                        <Route path="stories(/:storyID)" component={ProjectStories} />
-                        <Route path="settings" component={ProjectSettings} />
+                        <Route path="sprint/:sprintID" component={ProjectSprint} />
+                        <Route path="sprints" component={ProjectSprints} />
+                        <Route path="stories" component={ProjectStories} />
+                        <Route path="settings" component={ProjectSettings} >
+                            <IndexRedirect from="" to="options" />
+                            <Route path="options" component={ProjectSettingsOptions} />
+                            <Route path="users" component={ProjectSettingsUsers} />
+                        </Route>
                     </Route>
+                    <Route path="404" component={Redirect404} />
                 </Route>
+                <Redirect from="*" to="/404" />
             </Router>
         );
     }
