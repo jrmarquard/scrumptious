@@ -78,7 +78,7 @@ export default class Stories extends React.Component {
         }
 
         // If the page is still mounted set a new state
-        if (!this._isMounted) this.setState({stories:newStories});        
+        if (this._isMounted) this.setState({stories:newStories});        
     }
 
     render() {
