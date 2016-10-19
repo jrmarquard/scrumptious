@@ -13,7 +13,7 @@ export default class NNav extends React.Component {
     }
 
     componentWillMount() {
-        this.onAuthStateChangedUnsub = firebase.auth().onAuthStateChanged(this.onAuthChangeObserver);        
+        this.onAuthStateChangedUnsub = firebase.auth().onAuthStateChanged(this.onAuthChangeObserver);
     }
 
     componentWillUnmount() {
@@ -41,7 +41,7 @@ export default class NNav extends React.Component {
         } else {
             // If logged out display a link to the sign up and sign in pages
             this.setState({
-                authNavPanel:                
+                authNavPanel:
                 <Nav pullRight class="no-marg">
                     <LinkContainer to="/signup">
                         <NavItem eventKey={4}>Sign Up</NavItem>
@@ -57,7 +57,7 @@ export default class NNav extends React.Component {
     render() {
         var projectPanel = '';
         if(this.props.isProjectActive) {
-            projectPanel = 
+            projectPanel =
                 <Nav id='nav-project'>
                     <LinkContainer to={'/project/' + this.props.projectID + '/overview'}>
                         <NavItem>Project Overview</NavItem>
