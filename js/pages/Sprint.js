@@ -28,14 +28,14 @@ export default class Sprint extends React.Component {
 
     // When component is rendered to the DOM for the first time, and first time only
     componentWillMount() {
-        firebase.getTicketsBySprint(this.props.params.projectID, 'current', (tickets) => {
+        this.unsubscribe = firebase.getTicketsBySprint(this.props.params.projectID, 'current', (tickets) => {
             this.tickets = tickets;
             this.setState({ tickets: this.tickets });
         });
     }
 
     componentWillUnmount() {
-        this.projectTickets.off();
+        this.unsubscribe();
     }
 
     createTicket = (title,desc,status,assignee,points) => {

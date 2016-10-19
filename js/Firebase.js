@@ -226,6 +226,9 @@ firebase.getTicketsBySprint = (projectId, sprint, cb) => {
         }
         cb(tickets);
     });
+    return () => {
+        query.off();
+    };
 }
 
 /*************
