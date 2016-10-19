@@ -38,29 +38,9 @@ export default class Sprint extends React.Component {
         this.unsubscribe();
     }
 
-    createTicket = (title,desc,status,assignee,points) => {
-        var key = firebase.createTicket(this.state.newTicketTitle,this.state.newTicketDescription,this.state.newTicketStatus,this.state.newTicketAssignee,this.state.newTicketPoints);
-        this.setState({
-           showModal: false,
-           newTicketTitle: 'Add title',
-           newTicketDescription: 'Add Description',
-           newTicketAssignee: 'Add Assignee',
-           newTicketPoints: 1,
-           newTicketStatus: 'to_do'
-          });
-    }
-
     completeSprint = () => {
         firebase.completeSprint(this.props.params.projectID);
     }
-
-     close = () => {
-       this.setState({ showModal: false });
-     }
-
-     open = () => {
-       this.setState({ showModal: true });
-     }
 
     render() {
 
@@ -91,81 +71,20 @@ export default class Sprint extends React.Component {
         var header = states[j].toLowerCase().split('_').map(function(word) {
             return (word.charAt(0).toUpperCase() + word.slice(1));
         }).join(' ');
-        print.push(<Col xs={3}><h4><Panel id="state-board" class="no-padding" header={header}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
-      }
-      var stateSelect = [];
-      for(var k in states){
-        stateSelect.push(<option value={states[k]}>{states[k]}</option>);
+        print.push(<Col key={j} xs={3}><h4><Panel id="state-board" class="no-padding" header={header}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
       }
 
         return (
             <div>
-            <Grid>
-              <Row>
-                <Form inline class="add-padding">
-                  <Button class=
-                  "add-ticket" onClick={() => this.completeSprint()}>Complete Sprint</Button>
-                  <Button
-                    bsStyle="info"
-                    onClick={this.open}
-                  ><Glyphicon glyph="plus"/> Create Ticket</Button>
-                </Form>
-              </Row>
-              <Row id="tickets">{print}</Row>
-            </Grid>
-
-
-
-
-          <Modal show={this.state.showModal} onHide={this.close}>
-          <Modal.Header closeButton>
-            <Modal.Title>Create New Ticket</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form horizontal>
-              <FormGroup>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Title
-                </Col>
-                <Col sm={10}>
-                  <FormControl onChange={(e) => this.setState({newTicketTitle: e.target.value})} type="text" placeholder="Title of ticket" />
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Assignee
-                </Col>
-                <Col sm={10}>
-                  <FormControl onChange={(e) => this.setState({newTicketAssignee: e.target.value})} type="text" placeholder="Assign a ticket to a person" />
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Col componentClass={ControlLabel} sm={2}>
-                  Description
-                </Col>
-                <Col sm={10}>
-                  <FormControl onChange={(e) => this.setState({newTicketDescription: e.target.value})} type="text" componentClass="textarea" placeholder="Enter a short description" />
-                </Col>
-              </FormGroup>
-              <FormGroup controlId="formControlsSelect">
-                <Col componentClass={ControlLabel} sm={2}>
-                  Select a board
-                </Col>
-                <Col sm={10}>
-                  <FormControl   onChange={(e) => this.setState({newTicketStatus: e.target.value})} componentClass="select">
-                    {stateSelect}
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.close}>Close</Button>
-            <Button class="add-ticket" onClick={() => this.createTicket()}><Glyphicon glyph="plus"/> Create Ticket</Button>
-          </Modal.Footer>
-          </Modal>
-
-
+                <Grid>
+                  <Row>
+                    <Form inline class="add-padding">
+                      <Button class=
+                      "add-ticket" onClick={() => this.completeSprint()}>Complete Sprint</Button>
+                    </Form>
+                  </Row>
+                  <Row id="tickets">{print}</Row>
+                </Grid>
             </div>
         );
     }

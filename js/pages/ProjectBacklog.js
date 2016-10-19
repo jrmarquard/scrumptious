@@ -1,8 +1,7 @@
 import firebase from 'firebase';
 import React from 'react';
 import { Link } from "react-router";
-
-import { Grid, Col, Row, Panel, PanelGroup, ListGroup, ListGroupItem, FormGroup, FormControl, ControlLabel, Button} from "react-bootstrap";
+import { Grid, Col, Row, Panel, PanelGroup, ListGroup, ListGroupItem, FormGroup, FormControl, ControlLabel, Button, Modal, Form, Glyphicon} from "react-bootstrap";
 
 import BacklogTicketItem from "../components/BacklogTicketItem.js"
 
@@ -15,7 +14,13 @@ export default class ProjectBacklog extends React.Component {
         this.state = {
             tickets : {},
             ticketsBacklog: [],
-            ticketsNextSprint: []
+            ticketsNextSprint: [],
+            showModal: false,
+            newTicketTitle: 'Add title',
+            newTicketDescription: 'Add Description',
+            newTicketAssignee: 'Add Assignee',
+            newTicketPoints: 1,
+            newTicketStatus: 'to_do'
         }
 
         this._didTicketsUpdate = false;
@@ -63,6 +68,26 @@ export default class ProjectBacklog extends React.Component {
         this._didTicketsUpdate = true;
         // If the page is still mounted set a new state
         if (this._isMounted) this.setState({tickets:ticketsCopy});    
+    }
+
+    createTicket = (title,desc,status,assignee,points) => {
+        var key = firebase.createTicket(this.state.newTicketTitle,this.state.newTicketDescription,this.state.newTicketStatus,this.state.newTicketAssignee,this.state.newTicketPoints);
+        this.setState({
+           showModal: false,
+           newTicketTitle: 'Add title',
+           newTicketDescription: 'Add Description',
+           newTicketAssignee: 'Add Assignee',
+           newTicketPoints: 1,
+           newTicketStatus: 'to_do'
+          });
+    }
+
+    closeNewTicketModal = () => {
+        this.setState({ showModal: false });
+    }
+
+    openNewTicketModal = () => {
+        this.setState({ showModal: true });
     }
 
     componentDidUpdate() {
@@ -125,29 +150,84 @@ export default class ProjectBacklog extends React.Component {
             );
         }
 
+        var states = ['to_do', 'in_progress', 'code_review', 'done'];
+        var stateSelect = [];
+        for(var k in states){
+            stateSelect.push(<option key={k} value={states[k]}>{states[k]}</option>);
+        }
+
         return (
-            <Grid>
-                <Row>
-                    <Col xs={6}>
-                        <h1>Backlog</h1>
-                        <Button onClick={() => this.addTicket}>
-                            Add Ticket
-                        </Button>
-                    </Col>
-                    <Col xs={6}>
-                        <h1>Next Sprint</h1>
-                    </Col>
-                </Row>
-                {/* Display backlog here */}
-                <Row>
-                    <Col xs={6}>
-                        {ticketsBacklogPanel}
-                    </Col>
-                    <Col xs={6}>
-                        {ticketsNextSprintPanel}
-                    </Col>
-                </Row>
-            </Grid>
+            <div>
+                <Grid>
+                    <Row>
+                        <Col xs={6}>
+                            <h1>Backlog</h1>
+                            <Button onClick={() => this.openNewTicketModal()}>
+                                Add Ticket
+                            </Button>
+                        </Col>
+                        <Col xs={6}>
+                            <h1>Next Sprint</h1>
+                        </Col>
+                    </Row>
+                    {/* Display backlog here */}
+                    <Row>
+                        <Col xs={6}>
+                            {ticketsBacklogPanel}
+                        </Col>
+                        <Col xs={6}>
+                            {ticketsNextSprintPanel}
+                        </Col>
+                    </Row>
+                </Grid>
+                <Modal show={this.state.showModal} onHide={() => this.closeNewTicketModal()}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Create New Ticket</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form horizontal>
+                      <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                          Title
+                        </Col>
+                        <Col sm={10}>
+                          <FormControl onChange={(e) => this.setState({newTicketTitle: e.target.value})} type="text" placeholder="Title of ticket" />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                          Assignee
+                        </Col>
+                        <Col sm={10}>
+                          <FormControl onChange={(e) => this.setState({newTicketAssignee: e.target.value})} type="text" placeholder="Assign a ticket to a person" />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                          Description
+                        </Col>
+                        <Col sm={10}>
+                          <FormControl onChange={(e) => this.setState({newTicketDescription: e.target.value})} type="text" componentClass="textarea" placeholder="Enter a short description" />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup controlId="formControlsSelect">
+                        <Col componentClass={ControlLabel} sm={2}>
+                          Select a board
+                        </Col>
+                        <Col sm={10}>
+                          <FormControl   onChange={(e) => this.setState({newTicketStatus: e.target.value})} componentClass="select">
+                            {stateSelect}
+                          </FormControl>
+                        </Col>
+                      </FormGroup>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={this.closeNewTicketModal}>Close</Button>
+                    <Button class="add-ticket" onClick={() => this.createTicket()}><Glyphicon glyph="plus"/> Create Ticket</Button>
+                  </Modal.Footer>
+              </Modal>
+          </div>
         );
     }
 
