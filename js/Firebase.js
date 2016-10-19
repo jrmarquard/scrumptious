@@ -149,7 +149,8 @@ firebase.addUserToProject = (projectID, user) => {
          description: description,
          status: status,
          assignee: assignee,
-         points:points
+         points:points,
+         sprint:'backlog'
      });
  }
  firebase.createStatus = (status,order) => {
