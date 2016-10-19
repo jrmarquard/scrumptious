@@ -23,13 +23,13 @@ export default class Ticket extends React.Component {
 
       var stateSelect = [];
       for(var k in this.props.states){
-        if(this.props.states[k].key == this.props.ticket.state){
+        if(this.props.states[k].key == this.props.ticket.status){
           stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
         break;
         }
       }
       for(var k in this.props.states){
-        if(this.props.states[k].key != this.props.ticket.state){
+        if(this.props.states[k].key != this.props.ticket.status){
           stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
         }
       }
@@ -63,7 +63,7 @@ export default class Ticket extends React.Component {
 
 
         return(
-          <OverlayTrigger trigger="click" rootClose placement="right" overlay={pop}>
+          <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={pop}>
           <Button  id={this.props.ticket.id}  class="ticket-box">
                 <h4 class="light-text">{this.props.ticket.title} <Label bsStyle="info" class="rightalign">{this.props.ticket.points}</Label></h4>
                 <h5><Label bsStyle="default">{this.props.ticket.assignee}</Label></h5>

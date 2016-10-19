@@ -40,12 +40,6 @@ nav#nav-project div {
     font-weight: bold;
     color: white;
 }
-#state-board{
-  display: inline-block;
-  width: 200px;
-  margin-top: 50px;
-  margin-right: 20px;
-}
 #inner-panel{
   padding: 0;
 }
@@ -64,12 +58,17 @@ form#inline{
 .margins{
   margin: 0rem;
 }
+.edit-status{
+  position: relative;
+  top: -71px;
+  left: 255px;
+  margin-bottom: -80px;
+}
 
 #state-board{
   display: inline-block;
   float: left;
   width: 300px;
-  margin-top: 80px;
   margin-right: 20px;
 }
 #inner-panel{
@@ -137,7 +136,7 @@ div.ticket > * {
 .add-padding{
   padding: 10px;
   float: right;
-  
+
 }
 .deleteTicket{
   position: absolute;
@@ -414,7 +413,7 @@ form#sign-in * {
     margin: 0.5rem;
 }
 div.panel div.panel-heading {
-    font-size: 3rem;
+    font-size: 2rem;
 }
 
 

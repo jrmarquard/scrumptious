@@ -5,12 +5,12 @@ import { Grid, Col, Row, Panel, PanelGroup, ListGroup, ListGroupItem, FormGroup,
 
 import BacklogTicketItem from "../components/BacklogTicketItem.js"
 
-export default class ProjectBacklog extends React.Component { 
+export default class ProjectBacklog extends React.Component {
 
     constructor() {
         super();
 
-        // Store tickets in state 
+        // Store tickets in state
         this.state = {
             tickets : {},
             ticketsBacklog: [],
@@ -20,12 +20,14 @@ export default class ProjectBacklog extends React.Component {
             newTicketDescription: 'Add Description',
             newTicketAssignee: 'Add Assignee',
             newTicketPoints: 1,
-            newTicketStatus: 'to_do'
+            newTicketStatus: 'none'
         }
 
         this._didTicketsUpdate = false;
         // Flag to make sure state is not modified after unmounting
         this._isMounted = false;
+        // Page's statuses will be filled by firebase subscription
+        this.statuses = {};
     }
 
     componentWillMount = () => {
@@ -45,6 +47,18 @@ export default class ProjectBacklog extends React.Component {
 
         // Set isMounted flag to true
         this._isMounted = true;
+
+        // firebase reference for the project's statuses
+        this.projectStatuses = firebase.database().ref('projects/'+this.props.params.projectID+'/statuses/');
+
+        // listener for the child_added event
+        this.projectStatuses.on('child_added', (data) => this.displayStatuses(data.key, data.val()));
+
+        // Wathces for removal of statuses
+        this.projectStatuses.on('child_removed', (data) => this.removeStatus(data.key, data.val()));
+
+        // Watches for updates of statuses
+        this.projectStatuses.on('child_changed', (data) => this.displayStatuses(data.key, data.val()));
     }
 
     componentWillUnmount() {
@@ -58,16 +72,16 @@ export default class ProjectBacklog extends React.Component {
     handleTickets = (event, ticketID, ticket) => {
         var ticketsCopy = this.state.tickets
 
-        // Add, change, or remove 
+        // Add, change, or remove
         if (event === 'child_added' || event === 'child_changed') {
-            ticketsCopy[ticketID] = ticket;    
+            ticketsCopy[ticketID] = ticket;
         } else if (event === 'child_removed') {
             delete ticketsCopy[ticketID];
         }
 
         this._didTicketsUpdate = true;
         // If the page is still mounted set a new state
-        if (this._isMounted) this.setState({tickets:ticketsCopy});    
+        if (this._isMounted) this.setState({tickets:ticketsCopy});
     }
 
     createTicket = (title,desc,status,assignee,points) => {
@@ -78,8 +92,48 @@ export default class ProjectBacklog extends React.Component {
            newTicketDescription: 'Add Description',
            newTicketAssignee: 'Add Assignee',
            newTicketPoints: 1,
-           newTicketStatus: 'to_do'
+           newTicketStatus: 'none'
           });
+    }
+    removeStatus = (key, payload) => {
+      //work out first to give old tickets (generally backloggy)
+      var first;
+      for( var k in this.state.statuses){
+        if(this.state.statuses[k].order == 1){
+         first = this.state.statuses[k].key;
+         break;
+        }
+      }
+      //allocate tickets
+      for(var i in this.state.tickets){
+        if(this.state.tickets[i].state == key){
+          firebase.updateTicket(this.state.tickets[i].key,{status:first});
+        }
+      }
+      //renumber other elements, that is reduce 1 of any further elements
+      var num = payload.order;
+      for( var j in this.state.statuses){
+        if(this.state.statuses[j].order > num){
+          var temp = this.state.statuses[j].order - 1;
+          firebase.updateStatus(this.state.statuses[j].key,{order:temp});
+        }
+      }
+
+      delete this.statuses[key];
+      this.setState( {statuses : this.statuses } );
+    }
+
+    displayStatuses= (key, status) => {
+      // Push the ticket onto the state object
+      this.statuses[key] = {
+          key: key,
+          complete: status.complete,
+          status: status.status,
+          order: status.order
+      };
+
+      this.setState( {statuses : this.statuses} );
+
     }
 
     closeNewTicketModal = () => {
@@ -87,7 +141,14 @@ export default class ProjectBacklog extends React.Component {
     }
 
     openNewTicketModal = () => {
-        this.setState({ showModal: true });
+      var first;
+      for( var key in this.state.statuses){
+        if(this.state.statuses[key].order == 1){
+         first = this.state.statuses[key].key;
+         break;
+        }
+      }
+      this.setState({ showModal: true, newTicketStatus: first });
     }
 
     componentDidUpdate() {
@@ -99,7 +160,7 @@ export default class ProjectBacklog extends React.Component {
             for (var id in this.state.tickets) {
                 var t = this.state.tickets[id];
 
-                var ticket = ( 
+                var ticket = (
                     <BacklogTicketItem
                         key={id}
                         ticketID={id}
@@ -114,7 +175,7 @@ export default class ProjectBacklog extends React.Component {
                 } else if (t.sprint === 'current') {
                     // Don't display these
                 } else if (t.sprint === 'next') {
-                    ticketsNextSprint.push(ticket);    
+                    ticketsNextSprint.push(ticket);
                 }
             }
 
@@ -146,14 +207,21 @@ export default class ProjectBacklog extends React.Component {
                     <ListGroup fill>
                         {this.state.ticketsNextSprint}
                     </ListGroup>
-                </Panel> 
+                </Panel>
             );
         }
 
-        var states = ['to_do', 'in_progress', 'code_review', 'done'];
+        var states = [];
+
+        //order statuses
+        for (var x in this.state.statuses){
+          states[this.state.statuses[x].order-1] = this.state.statuses[x];
+        }
+
+        //add statuses to a select box friendly format
         var stateSelect = [];
         for(var k in states){
-            stateSelect.push(<option key={k} value={states[k]}>{states[k]}</option>);
+          stateSelect.push(<option value={states[k].key}>{states[k].status}</option>);
         }
 
         return (
