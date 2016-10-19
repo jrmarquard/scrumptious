@@ -96,12 +96,14 @@ firebase.completeSprint = (projectId) => {
             var tickets = data.val();
             for (var id in tickets) {
                 var ticket = tickets[id];
-                if (firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+ ticket.status).complete == true) {
+                var sta;
+                firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+ ticket.status).on('value', (data) => {
+                    sta = data.val();
+                    console.log(status);
+                  })
+                if (sta.complete == true) {
                     ticket.sprint = 'completed';
                 } else {
-                  console.log(firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+ ticket.status).complete);
-
-                  console.log(ticket.status);
                     ticket.sprint = 'next';
                 }
                 firebase.database().ref('projects').child(projectId)
