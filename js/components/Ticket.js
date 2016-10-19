@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import EditableTextView from './EditableTextView.js';
-import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, Label, Popover, OverlayTrigger} from 'react-bootstrap';
+import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, Label, Popover, OverlayTrigger, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 
 
 
@@ -44,6 +44,18 @@ export default class Ticket extends React.Component {
                 value={this.props.ticket.points}
                 onChange={(data) => this.updateField('points', data)}
             /></strong><br/>
+            Status: <br/>
+            <FormGroup controlId="formControlsSelect">
+                <FormControl
+                    onChange={(e) => this.updateField('status', e.target.value)}  
+                    defaultValue={this.props.ticket.status} 
+                    componentClass="select">
+                    <option value="to_do">To do</option>
+                    <option value="in_progress">In progress</option>
+                    <option value="code_review">Code Review</option>
+                    <option value="done">Done</option>
+                </FormControl>
+            </FormGroup>
 
           <Button class="deleteTicket" onClick={() => this.deleteTicket()}><Glyphicon glyph="trash"/></Button>
         </Popover>

@@ -111,7 +111,10 @@ export default class Sprint extends React.Component {
       }
 
       for (var j in TicketComponents){
-        print.push(<Col xs={3}><h4><Panel id="state-board" class="no-padding" header={states[j]}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
+        var header = states[j].toLowerCase().split('_').map(function(word) {
+            return (word.charAt(0).toUpperCase() + word.slice(1));
+        }).join(' ');
+        print.push(<Col xs={3}><h4><Panel id="state-board" class="no-padding" header={header}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
       }
       var stateSelect = [];
       for(var k in states){
