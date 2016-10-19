@@ -43,7 +43,7 @@ export default class EditableTextView extends React.Component {
         if (this.state.editing) {
             return (
                 <input
-                    type = "text"
+                    type = "textarea"
                     ref = "valueInput"
                     onChange={(e) => {
                         this.props.onChange( e.target.value );

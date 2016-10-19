@@ -83,6 +83,8 @@ firebase.createProject = (userID, title) => {
         console.log('Failed to create new project');
         console.log(error);
     });
+
+    firebase.createStatus('Backlog',1);
 }
 
 /**
@@ -153,15 +155,14 @@ firebase.addUserToProject = (projectID, user) => {
      });
  }
  firebase.createStatus = (status,order) => {
-     key = firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
+      firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses')
      .push({
          status:status,
          order:order
      });
-     return key.getKey();
  }
- firebase.updateStatus = (data) => {
-     firebase.database().ref('projects/'+firebase.currentProjectID+'/status/'+key).update(data)
+ firebase.updateStatus = (key,data) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+key).update(data)
  }
 
 firebase.updateTicket = (key, data) => {
@@ -170,6 +171,12 @@ firebase.updateTicket = (key, data) => {
 
 firebase.deleteTicket = (key) => {
     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets').child(key)
+    .remove()
+    .catch((err) => console.log(err));
+}
+
+firebase.deleteStatus = (key) => {
+    firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses').child(key)
     .remove()
     .catch((err) => console.log(err));
 }

@@ -19,14 +19,14 @@ export default class Notifications extends React.Component {
         }
     }
 
-	componentDidMount() { 
+	componentDidMount() {
         this._isMounted = true;
 
         // Set reference to firebase root in case it unmounts too quickly
         this.userNotificationsRef = firebase.database().ref('/');
 
         // When the auth state changes, subscribte to firebase references
-        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {  
+        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {
             this.userNotificationsRef = firebase.database().ref('users/'+user.uid+'/notifications');
 
             this.userNotificationsRef.on('child_added', (data) => this.handleNotifications('added', data.key, data.val()));
@@ -43,7 +43,7 @@ export default class Notifications extends React.Component {
     handleNotifications = (event, nofificationID, notification) => {
         // Add or remove notification from component tracking
         if (event === 'added' || event === 'changed') {
-            this.notifications[nofificationID] = notification;    
+            this.notifications[nofificationID] = notification;
         } else if (event === 'removed') {
             delete this.notifications[nofificationID];
         }

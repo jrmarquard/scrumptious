@@ -2,7 +2,7 @@ import firebase from 'firebase'
 import React from 'react';
 
 import { Link } from "react-router";
-
+import { Button } from "react-bootstrap";
 export default class Notification extends React.Component {
     // Required props for this Component
     static propTypes = {
@@ -52,22 +52,22 @@ export default class Notification extends React.Component {
             notificiationRender = (
                 <div class='notification'>
                     [{type}]: {content}
-                    <button onClick={() => this.deleteNotification()}>Delete</button>
+                    <Button onClick={() => this.deleteNotification()}>Dismiss</Button>
                 </div>
             );
         } else if (type === 'project-invite') {
             notificiationRender = (
                 <div class='notification'>
                     [{type}]: {content}
-                    <button onClick={() => this.acceptProjectInvite()}>Accept</button>
-                    <button onClick={() => this.deleteNotification()}>Delete</button>
+                    <Button onClick={() => this.acceptProjectInvite()}>Accept</Button>
+                    <Button onClick={() => this.deleteNotification()}>Delete</Button>
                 </div>
             );
         } else if (type === 'project-invite-accepted') {
             notificiationRender = (
                 <div class='notification'>
                     [{type}]: {content}
-                    <button onClick={() => this.deleteNotification()}>Delete</button>
+                    <Button onClick={() => this.deleteNotification()}>Delete</Button>
                 </div>
             );
         }
