@@ -28,41 +28,14 @@ export default class Sprint extends React.Component {
 
     // When component is rendered to the DOM for the first time, and first time only
     componentWillMount() {
-        // firebase reference for the project's tickets
-        this.projectTickets = firebase.database().ref('projects/'+this.props.params.projectID+'/tickets/');
-
-        // listener for the child_added event
-        this.projectTickets.on('child_added', (data) => this.displayTicket(data.key, data.val()));
-
-        // Wathces for removal of tickets
-        this.projectTickets.on('child_removed', (data) => this.removeTicket(data.key, data.val()));
-
-        // Watches for updates of tickets
-        this.projectTickets.on('child_changed', (data) => this.displayTicket(data.key, data.val()));
+        firebase.getTicketsBySprint(this.props.params.projectID, 'current', (tickets) => {
+            this.tickets = tickets;
+            this.setState({ tickets: this.tickets });
+        });
     }
 
     componentWillUnmount() {
         this.projectTickets.off();
-    }
-
-    removeTicket = (key, payload) => {
-        delete this.tickets[key];
-        this.setState( {tickets : this.tickets } );
-    }
-
-    displayTicket = (key, ticket) => {
-
-        // Push the ticket onto the state object
-        this.tickets[key] = {
-            key: key,
-            title: ticket.title,
-            description: ticket.description,
-            assignee: ticket.assignee,
-            status: ticket.status,
-            points: ticket.points
-        };
-
-        this.setState( {tickets : this.tickets} );
     }
 
     createTicket = (title,desc,status,assignee,points) => {
@@ -75,6 +48,10 @@ export default class Sprint extends React.Component {
            newTicketPoints: 1,
            newTicketStatus: 'to_do'
           });
+    }
+
+    completeSprint = () => {
+        firebase.completeSprint(this.props.params.projectID);
     }
 
      close = () => {
@@ -126,14 +103,8 @@ export default class Sprint extends React.Component {
             <Grid>
               <Row>
                 <Form inline class="add-padding">
-                  <FormControl
-                    type="text"
-                    label="New Board"
-                    placeholder="Enter a board name"
-                    onChange={(e) => this.setState({newBoard: e.target.value})}
-                  />
                   <Button class=
-                  "add-ticket" onClick={() => this.createTicket(this.state.newBoard)}>Create Board</Button>
+                  "add-ticket" onClick={() => this.completeSprint()}>Complete Sprint</Button>
                   <Button
                     bsStyle="info"
                     onClick={this.open}

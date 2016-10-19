@@ -85,6 +85,25 @@ firebase.createProject = (userID, title) => {
     });
 }
 
+firebase.completeSprint = (projectId) => {
+    firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('current')
+        .once('value', (data) => {
+            var tickets = data.val();
+            for (var id in tickets) {
+                var ticket = tickets[id];
+                if (ticket.status == 'done') {
+                    ticket.sprint = 'completed';
+                } else {
+                    ticket.sprint = 'next';
+                }
+                firebase.database().ref('projects').child(projectId)
+                    .child('tickets').child(id).set(ticket);
+            }
+        });
+}
+
 /**
  *  Delete a project.
  *   - Delete the project in /projects/
@@ -149,7 +168,8 @@ firebase.addUserToProject = (projectID, user) => {
          description: description,
          status: status,
          assignee: assignee,
-         points:points
+         points: points,
+         sprint: 'backlog'
      });
  }
  firebase.createStatus = (status,order) => {
@@ -178,6 +198,33 @@ firebase.getTicket = (key) => {
     // returns a promise
     return firebase.database().ref('tickets').once('value', (data) => {
         console.log(data);
+    });
+}
+
+firebase.getTicketsBySprint = (projectId, sprint, cb) => {
+    var tickets = {};
+    var query = firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo(sprint);
+
+    query.on('child_added', (data) => {
+        var ticket = data.val();
+        tickets[data.key] = ticket;
+        cb(tickets);
+    });
+    query.on('child_changed', (data) => {
+        var ticket = data.val();
+        if (data.key in tickets) {
+            tickets[data.key] = ticket;
+        }
+        cb(tickets);
+    });
+    query.on('child_removed', (data) => {
+        var ticket = data.val();
+        if (data.key in tickets) {
+            delete tickets[data.key];
+        }
+        cb(tickets);
     });
 }
 
