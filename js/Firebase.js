@@ -104,6 +104,21 @@ firebase.completeSprint = (projectId) => {
         });
 }
 
+firebase.startSprint = (projectId) => {
+    firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('next')
+        .once('value', (data) => {
+            var tickets = data.val();
+            for (var id in tickets) {
+                var ticket = tickets[id];
+                ticket.sprint = 'current';
+                firebase.database().ref('projects').child(projectId)
+                    .child('tickets').child(id).set(ticket);
+            }
+        });
+}
+
 /**
  *  Delete a project.
  *   - Delete the project in /projects/
@@ -225,6 +240,19 @@ firebase.getTicketsBySprint = (projectId, sprint, cb) => {
             delete tickets[data.key];
         }
         cb(tickets);
+    });
+    return () => {
+        query.off();
+    };
+}
+
+firebase.hasActiveSprint = (projectId, cb) => {
+    var query = firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('current')
+        .limitToFirst(1);
+    query.on('value', (data) => {
+        cb(data.val() != null);
     });
     return () => {
         query.off();

@@ -13,6 +13,7 @@ export default class Sprint extends React.Component {
         this.state = {
             tickets : {},
             loading : true,
+            hasActiveSprint: false,
             currentProjectID : 0,
             showModal: false,
             newTicketTitle: 'Add title',
@@ -28,18 +29,26 @@ export default class Sprint extends React.Component {
 
     // When component is rendered to the DOM for the first time, and first time only
     componentWillMount() {
-        this.unsubscribe = firebase.getTicketsBySprint(this.props.params.projectID, 'current', (tickets) => {
+        this.unsubscribe = [];
+        this.unsubscribe.push(firebase.getTicketsBySprint(this.props.params.projectID, 'current', (tickets) => {
             this.tickets = tickets;
             this.setState({ tickets: this.tickets });
-        });
+        }));
+        this.unsubscribe.push(firebase.hasActiveSprint(this.props.params.projectID, (hasActiveSprint) => {
+            this.setState({ hasActiveSprint: hasActiveSprint });
+        }));
     }
 
     componentWillUnmount() {
-        this.unsubscribe();
+        this.unsubscribe.forEach((unsub) => unsub());
     }
 
-    completeSprint = () => {
-        firebase.completeSprint(this.props.params.projectID);
+    sprintAction = () => {
+        if (this.state.hasActiveSprint) {
+            firebase.completeSprint(this.props.params.projectID);
+        } else {
+            firebase.startSprint(this.props.params.projectID);
+        }
     }
 
     render() {
@@ -48,39 +57,40 @@ export default class Sprint extends React.Component {
         var states = ['to_do', 'in_progress', 'code_review', 'done'];
         var print = [];
 
-      //loop over states and tickets, pushing the markup onto ticket components
-      for(var i in states){
-        var status = states[i];
-        var temp = [];
-        for (var key in this.state.tickets) {
-          if(this.state.tickets[key].status == status){
-            temp.push(
-                <Ticket
-                    id="inner-panel"
-                    key={key}
-                    ticketRef={'projects/' + this.props.params.projectID + '/tickets/' + key}
-                    ticket={this.state.tickets[key]}
-                />
-            );
-          }
+        //loop over states and tickets, pushing the markup onto ticket components
+        for(var i in states){
+            var status = states[i];
+            var temp = [];
+            for (var key in this.state.tickets) {
+                if(this.state.tickets[key].status == status){
+                    temp.push(
+                        <Ticket
+                            id="inner-panel"
+                            key={key}
+                            ticketRef={'projects/' + this.props.params.projectID + '/tickets/' + key}
+                            ticket={this.state.tickets[key]}
+                        />
+                    );
+                }
+            }
+            TicketComponents.push(temp);
         }
-        TicketComponents.push(temp);
-      }
 
-      for (var j in TicketComponents){
-        var header = states[j].toLowerCase().split('_').map(function(word) {
-            return (word.charAt(0).toUpperCase() + word.slice(1));
-        }).join(' ');
-        print.push(<Col key={j} xs={3}><h4><Panel id="state-board" class="no-padding" header={header}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
-      }
+        for (var j in TicketComponents){
+            var header = states[j].toLowerCase().split('_').map(function(word) {
+                return (word.charAt(0).toUpperCase() + word.slice(1));
+            }).join(' ');
+            print.push(<Col key={j} xs={3}><h4><Panel id="state-board" class="no-padding" header={header}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
+        }
+
+        var buttonText = this.state.hasActiveSprint ? 'Complete Sprint' : 'Start Next Sprint';
 
         return (
             <div>
                 <Grid>
                   <Row>
                     <Form inline class="add-padding">
-                      <Button class=
-                      "add-ticket" onClick={() => this.completeSprint()}>Complete Sprint</Button>
+                      <Button class="add-ticket" onClick={() => this.sprintAction()}>{buttonText}</Button>
                     </Form>
                   </Row>
                   <Row id="tickets">{print}</Row>
