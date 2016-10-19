@@ -13,6 +13,7 @@ export default class ProjectBacklog extends React.Component {
         // Store tickets in state
         this.state = {
             tickets : {},
+            statuses: {},
             ticketsBacklog: [],
             ticketsNextSprint: [],
             showModal: false,
