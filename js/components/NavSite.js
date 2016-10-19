@@ -62,8 +62,8 @@ export default class NNav extends React.Component {
                     <LinkContainer to={'/project/' + this.props.projectID + '/overview'}>
                         <NavItem>Project Overview</NavItem>
                     </LinkContainer>
-                    <LinkContainer to={'/project/' + this.props.projectID + '/board'}>
-                        <NavItem>Scrum Board</NavItem>
+                    <LinkContainer to={'/project/' + this.props.projectID + '/sprint'}>
+                        <NavItem>Sprint</NavItem>
                     </LinkContainer>
                     <LinkContainer to={'/project/' + this.props.projectID + '/sprints'}>
                         <NavItem>Sprints</NavItem>

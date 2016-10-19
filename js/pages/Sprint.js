@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from "react-router";
 import firebase from 'firebase';
-import { Panel, ListGroup, Button, Glyphicon, Popover, OverlayTrigger, Form, FieldGroup, FormGroup, ControlLabel, FormControl, Modal, Col } from 'react-bootstrap';
+import { Panel, ListGroup, Button, Glyphicon, Popover, OverlayTrigger, Form, FieldGroup, FormGroup, ControlLabel, FormControl, Modal, Grid, Row, Col } from 'react-bootstrap';
 
 import Ticket from "../components/Ticket.js";
 
-export default class Board extends React.Component {
+export default class Sprint extends React.Component {
     constructor(props) {
         super();
 
@@ -14,6 +14,12 @@ export default class Board extends React.Component {
             tickets : {},
             loading : true,
             currentProjectID : 0,
+            showModal: false,
+            newTicketTitle: 'Add title',
+            newTicketDescription: 'Add Description',
+            newTicketAssignee: 'Add Assignee',
+            newTicketPoints: 1,
+            newTicketStatus: 'to_do'
         };
 
         // Page's tickets will be filled by firebase subscription
@@ -52,20 +58,11 @@ export default class Board extends React.Component {
             title: ticket.title,
             description: ticket.description,
             assignee: ticket.assignee,
-            state: ticket.status,
+            status: ticket.status,
             points: ticket.points
         };
 
         this.setState( {tickets : this.tickets} );
-
-        this.setState({
-           showModal: false,
-           newTicketTitle: 'Add title',
-           newTicketDescription: 'Add Description',
-           newTicketAssignee: 'Add Assignee',
-           newTicketPoints: 1,
-           newTicketStatus: 'Backlog'
-          });
     }
 
     createTicket = (title,desc,status,assignee,points) => {
@@ -76,7 +73,7 @@ export default class Board extends React.Component {
            newTicketDescription: 'Add Description',
            newTicketAssignee: 'Add Assignee',
            newTicketPoints: 1,
-           newTicketStatus: 'Backlog'
+           newTicketStatus: 'to_do'
           });
     }
 
@@ -91,22 +88,15 @@ export default class Board extends React.Component {
     render() {
 
         var TicketComponents = [];
-        var states = [];
+        var states = ['to_do', 'in_progress', 'code_review', 'done'];
         var print = [];
 
-        //figure out the lost of states
-        for (var key in this.state.tickets) {
-            var st = this.state.tickets[key].state;
-            if (states.indexOf(st) == -1) {
-                states.push(st);
-            }
-        }
       //loop over states and tickets, pushing the markup onto ticket components
       for(var i in states){
         var status = states[i];
         var temp = [];
         for (var key in this.state.tickets) {
-          if(this.state.tickets[key].state == status){
+          if(this.state.tickets[key].status == status){
             temp.push(
                 <Ticket
                     id="inner-panel"
@@ -121,7 +111,7 @@ export default class Board extends React.Component {
       }
 
       for (var j in TicketComponents){
-        print.push(<h4><Panel id="state-board" class="no-padding" header={states[j]}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4>);
+        print.push(<Col xs={3}><h4><Panel id="state-board" class="no-padding" header={states[j]}><ListGroup>{TicketComponents[j]}</ListGroup></Panel></h4></Col>);
       }
       var stateSelect = [];
       for(var k in states){
@@ -130,21 +120,25 @@ export default class Board extends React.Component {
 
         return (
             <div>
-            <Form inline class="add-padding">
-              <FormControl
-                type="text"
-                label="New Board"
-                placeholder="Enter a board name"
-                onChange={(e) => this.setState({newBoard: e.target.value})}
-              />
-              <Button class=
-              "add-ticket" onClick={() => this.createTicket(this.state.newBoard)}>Create Board</Button>
-              <Button
-                bsStyle="info"
-                onClick={this.open}
-              ><Glyphicon glyph="plus"/> Create Ticket</Button>
-            </Form>
-            <div id="tickets">{print}</div>
+            <Grid>
+              <Row>
+                <Form inline class="add-padding">
+                  <FormControl
+                    type="text"
+                    label="New Board"
+                    placeholder="Enter a board name"
+                    onChange={(e) => this.setState({newBoard: e.target.value})}
+                  />
+                  <Button class=
+                  "add-ticket" onClick={() => this.createTicket(this.state.newBoard)}>Create Board</Button>
+                  <Button
+                    bsStyle="info"
+                    onClick={this.open}
+                  ><Glyphicon glyph="plus"/> Create Ticket</Button>
+                </Form>
+              </Row>
+              <Row id="tickets">{print}</Row>
+            </Grid>
 
 
 
