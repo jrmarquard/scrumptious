@@ -1,10 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import EditableTextView from './EditableTextView.js';
-import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, Label, Popover, OverlayTrigger, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
-
-
-
+import { Button, Panel, ListGroup, ListGroupItem, Glyphicon, FormControl, Label, Popover, OverlayTrigger, ButtonGroup, ButtonToolbar} from 'react-bootstrap';
 
 export default class Ticket extends React.Component {
     constructor(props) {
@@ -22,41 +19,44 @@ export default class Ticket extends React.Component {
         .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
     }
 
-
-
-
     render() {
+
+      var stateSelect = [];
+      for(var k in this.props.states){
+        if(this.props.states[k].key == this.props.ticket.state){
+          stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
+        break;
+        }
+      }
+      for(var k in this.props.states){
+        if(this.props.states[k].key != this.props.ticket.state){
+          stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
+        }
+      }
+
       const pop = (
         <Popover class="popover-ticket" id="popover-trigger-click-root-close">
-            Title: <br/> <strong><EditableTextView
+            <strong>Title:</strong> <br/> <EditableTextView
                 value={this.props.ticket.title}
                 onChange={(data) => this.updateField('title', data)}
-            /></strong><br/>
-            Assignee:<br/><strong><EditableTextView
+            /><br/>
+            <strong>Assignee:</strong><br/><EditableTextView
                 value={this.props.ticket.assignee}
                 onChange={(data) => this.updateField('assignee', data)}
-            /></strong><br/>
-            Description: <br/> <strong><EditableTextView
+            /><br/>
+            <strong>Description:</strong> <br/><EditableTextView
                 value={this.props.ticket.description}
                 onChange={(data) => this.updateField('description', data)}
-            /></strong><br/>
-            Points: <br/> <strong><EditableTextView
+            /><br/>
+            <strong>Points: </strong> <br/><EditableTextView
                 value={this.props.ticket.points}
                 onChange={(data) => this.updateField('points', data)}
-            /></strong><br/>
-            Status: <br/>
-            <FormGroup controlId="formControlsSelect">
-                <FormControl
-                    onChange={(e) => this.updateField('status', e.target.value)}  
-                    defaultValue={this.props.ticket.status} 
-                    componentClass="select">
-                    <option value="to_do">To do</option>
-                    <option value="in_progress">In progress</option>
-                    <option value="code_review">Code Review</option>
-                    <option value="done">Done</option>
-                </FormControl>
-            </FormGroup>
-
+            /><br/>
+            <strong>Current Status:</strong> <br/>
+            <FormControl  onChange={(e) => this.updateField('status',e.target.value)} componentClass="select">
+              {stateSelect}
+            </FormControl>
+            <br/>
           <Button class="deleteTicket" onClick={() => this.deleteTicket()}><Glyphicon glyph="trash"/></Button>
         </Popover>
       );
@@ -73,32 +73,3 @@ export default class Ticket extends React.Component {
     }
 
 }
-
-
-/*
-<EditableTextView
-    value={this.props.ticket.title}
-    onChange={(data) => this.updateField('title', data)}
-/>
-<br/>
-<EditableTextView
-    value={this.props.ticket.state}
-    onChange={(data) => this.updateField('state', data)}
-/>
-<br/>
-<EditableTextView
-    value={this.props.ticket.assignee}
-    onChange={(data) => this.updateField('assignee', data)}
-/>
-<br/>
-<EditableTextView
-    value={this.props.ticket.description}
-    onChange={(data) => this.updateField('description', data)}
-/>
-<br/>
-<EditableTextView
-    value={this.props.ticket.points}
-    onChange={(data) => this.updateField('points', data)}
-/>
-<br/>
-*/

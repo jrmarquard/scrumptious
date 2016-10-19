@@ -200,6 +200,16 @@ firebase.getTicket = (key) => {
         console.log(data);
     });
 }
+firebase.createStatus = (status,order) => {
+      firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses')
+     .push({
+         status:status,
+         order:order
+     });
+ }
+ firebase.updateStatus = (key,data) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+key).update(data)
+ }
 
 firebase.getTicketsBySprint = (projectId, sprint, cb) => {
     var tickets = {};
