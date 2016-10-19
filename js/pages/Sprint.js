@@ -103,6 +103,7 @@ export default class Sprint extends React.Component {
     }
 
     createStatus = (status) => {
+      if(status){
       var max = 1;
       var completeKey;
         for( var key in this.state.statuses){
@@ -115,6 +116,7 @@ export default class Sprint extends React.Component {
         }
         firebase.updateStatus(completeKey,{order:max+1})
         firebase.createStatus(status,max,false);
+      }
     }
 
     sprintAction = () => {
