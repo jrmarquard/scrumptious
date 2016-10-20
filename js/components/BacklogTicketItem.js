@@ -9,7 +9,8 @@ export default class BacklogTicketItem extends React.Component {
         ticketID: React.PropTypes.any.isRequired,
         projectID: React.PropTypes.any.isRequired,
         ticketTitle: React.PropTypes.any.isRequired,
-        ticketSprint: React.PropTypes.any.isRequired
+        ticketSprint: React.PropTypes.any.isRequired,
+        ticketDescription: React.PropTypes.any.isRequired
     }
 
     constructor(props) {
@@ -43,12 +44,17 @@ export default class BacklogTicketItem extends React.Component {
         return (
             <ListGroupItem>
                 <Grid>
-                    <Col xs={8}>
-                        <h3>{this.props.ticketTitle}</h3>
-                    </Col>
-                    <Col xs={4}>
-                        {button}
-                    </Col>
+                    <Row>
+                        <Col xs={8}>
+                            <h3>{this.props.ticketTitle}</h3>
+                        </Col>
+                        <Col xs={4}>
+                            {button}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <p>{this.props.ticketDescription}</p>
+                    </Row>
                 </Grid>
             </ListGroupItem>
         );

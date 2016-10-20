@@ -13,7 +13,7 @@ export default class ProjectBacklog extends React.Component {
         // Store tickets in state
         this.state = {
             tickets : {},
-            statuses: {},
+            ticketsCompleted: [],
             ticketsBacklog: [],
             ticketsNextSprint: [],
             showModal: false,
@@ -93,7 +93,7 @@ export default class ProjectBacklog extends React.Component {
            newTicketStatus: 'none'
           });
     }
-    
+
 
     displayStatuses= (key, status) => {
       // Push the ticket onto the state object
@@ -129,6 +129,8 @@ export default class ProjectBacklog extends React.Component {
             var ticketsBacklog = [];
             var ticketsNextSprint = []
 
+            var ticketsCompleted = [];
+
             for (var id in this.state.tickets) {
                 var t = this.state.tickets[id];
 
@@ -139,6 +141,7 @@ export default class ProjectBacklog extends React.Component {
                         projectID={this.projectID}
                         ticketTitle={t.title}
                         ticketSprint={t.sprint}
+                        ticketDescription={t.description}
                         />
                 );
 
@@ -148,13 +151,16 @@ export default class ProjectBacklog extends React.Component {
                     // Don't display these
                 } else if (t.sprint === 'next') {
                     ticketsNextSprint.push(ticket);
+                } else if (t.sprint === 'completed') {
+                    ticketsCompleted.push(ticket);
                 }
             }
 
             this._didTicketsUpdate = false;
             if(this._isMounted) this.setState({
                 ticketsBacklog : ticketsBacklog,
-                ticketsNextSprint : ticketsNextSprint
+                ticketsNextSprint : ticketsNextSprint,
+                ticketsCompleted : ticketsCompleted
             });
         }
     }
@@ -163,6 +169,7 @@ export default class ProjectBacklog extends React.Component {
 
         var ticketsBacklogPanel = '';
         var ticketsNextSprintPanel = '';
+        var ticketsCompletedPanel = '';
 
         if (this.state.ticketsBacklog.length !== 0) {
             ticketsBacklogPanel = (
@@ -178,6 +185,16 @@ export default class ProjectBacklog extends React.Component {
                 <Panel>
                     <ListGroup fill>
                         {this.state.ticketsNextSprint}
+                    </ListGroup>
+                </Panel>
+            );
+        }
+
+        if (this.state.ticketsCompleted.length !== 0) {
+            ticketsCompletedPanel = (
+                <Panel>
+                    <ListGroup fill>
+                        {this.state.ticketsCompleted}
                     </ListGroup>
                 </Panel>
             );
@@ -200,23 +217,31 @@ export default class ProjectBacklog extends React.Component {
             <div>
                 <Grid>
                     <Row>
-                        <Col xs={6}>
-                            <h1>Backlog</h1>
-                            <Button onClick={() => this.openNewTicketModal()}>
-                                Add Ticket
-                            </Button>
+                        <Col xs={4}>
+                            <h1>Backlog
+
+                                <Button onClick={() => this.openNewTicketModal()}>
+                                    Add Ticket
+                                </Button>
+                            </h1>
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={4}>
                             <h1>Next Sprint</h1>
+                        </Col>
+                        <Col xs={4}>
+                            <h1>Completed</h1>
                         </Col>
                     </Row>
                     {/* Display backlog here */}
                     <Row>
-                        <Col xs={6}>
+                        <Col xs={4}>
                             {ticketsBacklogPanel}
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={4}>
                             {ticketsNextSprintPanel}
+                        </Col>
+                        <Col xs={4}>
+                            {ticketsCompletedPanel}
                         </Col>
                     </Row>
                 </Grid>
