@@ -55,9 +55,6 @@ export default class ProjectBacklog extends React.Component {
         // listener for the child_added event
         this.projectStatuses.on('child_added', (data) => this.displayStatuses(data.key, data.val()));
 
-        // Wathces for removal of statuses
-        this.projectStatuses.on('child_removed', (data) => this.removeStatus(data.key, data.val()));
-
         // Watches for updates of statuses
         this.projectStatuses.on('child_changed', (data) => this.displayStatuses(data.key, data.val()));
     }
@@ -96,33 +93,7 @@ export default class ProjectBacklog extends React.Component {
            newTicketStatus: 'none'
           });
     }
-    removeStatus = (key, payload) => {
-      //work out first to give old tickets (generally backloggy)
-      var first;
-      for( var k in this.state.statuses){
-        if(this.state.statuses[k].order == 1){
-         first = this.state.statuses[k].key;
-         break;
-        }
-      }
-      //allocate tickets
-      for(var i in this.state.tickets){
-        if(this.state.tickets[i].state == key){
-          firebase.updateTicket(this.state.tickets[i].key,{status:first});
-        }
-      }
-      //renumber other elements, that is reduce 1 of any further elements
-      var num = payload.order;
-      for( var j in this.state.statuses){
-        if(this.state.statuses[j].order > num){
-          var temp = this.state.statuses[j].order - 1;
-          firebase.updateStatus(this.state.statuses[j].key,{order:temp});
-        }
-      }
-
-      delete this.statuses[key];
-      this.setState( {statuses : this.statuses } );
-    }
+    
 
     displayStatuses= (key, status) => {
       // Push the ticket onto the state object

@@ -60,7 +60,7 @@ export default class Sprint extends React.Component {
         this.unsubscribe.forEach((unsub) => unsub());
     }
 
-    removeStatus = (key, payload) => {
+    removeStatus = (skey, payload) => {
       //work out first to give old tickets (generally backloggy)
       var first;
       for( var k in this.state.statuses){
@@ -70,9 +70,9 @@ export default class Sprint extends React.Component {
         }
       }
       //allocate tickets
-      for(var i in this.state.tickets){
-        if(this.state.tickets[i].state == key){
-          firebase.updateTicket(this.state.tickets[i].key,{status:first});
+      for(var key in this.state.tickets){
+        if(this.state.tickets[key].status == skey){
+          firebase.updateTicket(key,{status:first});
         }
       }
       //renumber other elements, that is reduce 1 of any further elements
@@ -84,8 +84,7 @@ export default class Sprint extends React.Component {
         }
       }
 
-      delete this.statuses[key];
-      this.setState( {statuses : this.statuses } );
+      delete this.statuses[skey];
     }
 
     displayStatuses= (key, status) => {
