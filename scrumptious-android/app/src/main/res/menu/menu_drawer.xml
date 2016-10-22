@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my_projects"
+            android:icon="@drawable/ic_view_list"
+            android:title="My Projects" />
+        <item
+            android:id="@+id/nav_sprint"
+            android:icon="@drawable/ic_sprint"
+            android:title="Sprint" />
+        <item
+            android:id="@+id/nav_backlog"
+            android:icon="@drawable/ic_backlog"
+            android:title="Backlog" />
+        <item
+            android:id="@+id/nav_project_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Project Settings" />
+    </group>
+
+</menu>

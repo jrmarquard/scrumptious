@@ -3,9 +3,13 @@ package us.crumptio.scrumptious;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,11 +18,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.login.LoginActivity;
-import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
-import us.crumptio.scrumptious.repositories.ProjectsRepository;
+import us.crumptio.scrumptious.sprint.SprintFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -29,12 +30,11 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private ProjectsRepository mProjectsRepo = new FirebaseProjectsRepository();
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawer;
 
-    private String mProjectId;
-
-    @BindView(R.id.view_pager)
-    ViewPager mViewPager;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +42,14 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        int padding = (int) UiUtils.dpToPixels(32, getResources());
-        mViewPager.setPadding(padding, 0, padding, 0);
-        mViewPager.setClipToPadding(false);
+        setSupportActionBar(mToolbar);
 
-        Log.d(TAG, mAuth.getCurrentUser().getUid());
-        mProjectsRepo.getDefaultProject(new ProjectsRepository.OnProjectRetrievedCallback() {
-            @Override
-            public void onProjectRetrieved(String projectId) {
-                mProjectId = projectId;
-                mViewPager.setAdapter(new ScrumBoardAdapter(getSupportFragmentManager(), projectId));
-            }
-        });
+        showFragment(new SprintFragment(), "sprint", false);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override
@@ -72,9 +68,12 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.btn_new_ticket)
-    protected void onNewTicketClicked() {
-        CreateTicketActivity.openActivity(this, mProjectId);
+    private void showFragment(Fragment fragment, String tag, boolean addToBackStack) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction trans = fm.beginTransaction();
+        trans.replace(R.id.content, fragment, tag);
+        if (addToBackStack) trans.addToBackStack(tag);
+        trans.commit();
     }
 
     private void signOut() {
