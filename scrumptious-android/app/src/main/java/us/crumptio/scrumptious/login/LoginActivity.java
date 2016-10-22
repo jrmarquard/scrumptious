@@ -48,6 +48,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     EditText mPassword;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private boolean mOpenedMainActivity = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,8 +67,12 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    MainActivity.openActivity(LoginActivity.this);
-                    finish();
+                    mAuth.removeAuthStateListener(mAuthListener);
+                    if (!mOpenedMainActivity) {
+                        MainActivity.openActivity(LoginActivity.this);
+                        finish();
+                        mOpenedMainActivity = true;
+                    }
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
