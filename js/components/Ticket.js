@@ -10,7 +10,7 @@ export default class Ticket extends React.Component {
     }
 
     deleteTicket = () => {
-        firebase.deleteTicket(this.props.ticket.key);
+        firebase.deleteTicket(this.props.tkey);
     }
 
     updateField = (field, value) => {

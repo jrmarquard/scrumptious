@@ -154,6 +154,7 @@ export default class Sprint extends React.Component {
                       <Ticket
                         id="inner-panel"
                         key={key}
+                        tkey = {key}
                         ticketRef={'projects/' + this.props.params.projectID + '/tickets/' + key}
                         ticket={this.state.tickets[key]}
                         states = {states}
