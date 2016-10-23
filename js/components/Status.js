@@ -39,16 +39,16 @@ export default class Status extends React.Component {
 
       if(this.props.status.complete == true){
         return(
-          <Col key={this.props.status.key} xs={3}><h5><Panel id="state-board" class="no-padding" header={this.props.status.status}>
-          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel></h5></Col>
+          <Panel id="state-board" class="no-padding" header={this.props.status.status}>
+          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel>
         );
       }else{
         return(
-          <Col key={this.props.status.key} xs={3}><h5><Panel id="state-board" class="no-padding" header={this.props.status.status}>
+        <Panel id="state-board" class="no-padding" header={this.props.status.status}>
             <OverlayTrigger trigger="click" rootClose placement="right" overlay={pop}>
               <Button class="edit-status"><Glyphicon glyph="edit"/></Button>
             </OverlayTrigger>
-          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel></h5></Col>
+          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel>
         );
       }
     }

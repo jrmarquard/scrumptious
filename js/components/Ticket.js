@@ -65,7 +65,7 @@ export default class Ticket extends React.Component {
         return(
           <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={pop}>
           <Button  id={this.props.ticket.id}  class="ticket-box">
-                <h4 class="light-text">{this.props.ticket.title} <Label bsStyle="info" class="rightalign">{this.props.ticket.points}</Label></h4>
+                <h4 ><span class="wrap">{this.props.ticket.title}</span> <Label bsStyle="info" class="rightalign">{this.props.ticket.points}</Label></h4>
                 <h5><Label bsStyle="default">{this.props.ticket.assignee}</Label></h5>
           </Button>
           </OverlayTrigger>

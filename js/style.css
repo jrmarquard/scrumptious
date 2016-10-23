@@ -60,16 +60,29 @@ form#inline{
 }
 .edit-status{
   position: relative;
-  top: -71px;
-  left: 255px;
+  top: -76px;
+  left: 250px;
   margin-bottom: -80px;
 }
-
-#state-board{
+.pointer{
+  cursor: pointer;
+}
+.horizontal-scroll{
+  white-space: nowrap;
   display: inline-block;
-  float: left;
+  overflow-x: auto;
+  width: 100vw;
+}
+#tickets{
+  overflow-x: auto;
+  display: inline-block;
+}
+#state-board{
+  display: inline-block!important;
   width: 300px;
   margin-right: 20px;
+  white-space: normal;
+  vertical-align: top;
 }
 #inner-panel{
   padding: 0;
@@ -129,9 +142,13 @@ div.ticket {
 div.ticket > * {
     display: block;
 }
+
 .ticket-box{
   width:100%;
   text-align: left;
+  word-wrap: normal;
+  white-space: normal;
+
 }
 .add-padding{
   padding: 10px;

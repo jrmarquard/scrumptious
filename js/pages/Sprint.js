@@ -196,7 +196,7 @@ export default class Sprint extends React.Component {
                       <Button class="add-ticket marg-left success" onClick={() => this.sprintAction()}><Glyphicon glyph="ok"/> {buttonText}</Button>
                     </Form>
                   </Row>
-                  <Row id="tickets">{print}</Row>
+                  <Row id="tickets"><div class="horizontal-scroll">{print}</div></Row>
                 </Grid>
             </div>
         );
