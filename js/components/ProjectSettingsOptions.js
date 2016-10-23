@@ -116,25 +116,6 @@ export default class ProjectSettingsOptions extends React.Component {
                         </Button>
                     </ListGroupItem>
                     <ListGroupItem>
-                        {/* Project Description */}
-                        <FormGroup controlId="formControlsTextarea">
-                            <ControlLabel>Description</ControlLabel>
-                            <FormControl 
-                                componentClass="textarea"
-                                type="text"
-                                placeholder="Enter description"
-                                onChange={(e) => this.setState({newStoryDescription : e.target.value})}
-                                />
-                        </FormGroup>
-                        <Button 
-                            disabled={!this.canTitleRename}
-                            onClick={() => this.renameProject()}
-                            >
-                            Save
-                        </Button>
-
-                    </ListGroupItem>
-                    <ListGroupItem>
                         <Button 
                             onClick={() => this.deleteProject()}
                             bsStyle='danger'
