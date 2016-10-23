@@ -4,7 +4,7 @@
 - [GitHub project (this project)](https://github.com/jrmarquard/scrumptious)
 - [Firebase Scrumptious console](https://console.firebase.google.com/project/scrumptious-a4bc9)
 - [Slack group](https://scrumptious4920.slack.com)
-- [Deployed site (release)](https://scrumptious-a4bc9.firebaseapp.com/)
+- [Deployed site (release)](https://s.crumptio.us/ or https://scrumptious-a4bc9.firebaseapp.com/)
 
 ## Setting up the project (Web App)
 - Clone this repository
@@ -12,7 +12,7 @@
 - Install all Node.js tools using npm: `npm install`.
 - `firebase login` to login to Firebase and follow the prompts (after you have been added to the Firebase project).
 - `npm run serve` to run a local webserver at `localhost:8080`
-- `npm run deploy` to deploy the website.    
+- `npm run deploy` to deploy the website.
 
 ## Files
 - `webpack.config-deploy.js` are webpack's configuration for deployment.
@@ -25,7 +25,7 @@
 
 ### Firebase Deployment and Serving
 Read more [here](https://www.firebase.com/docs/hosting/command-line-tool.html).
- - `firebase deploy` will deploy the static assests and security rules. Everything will be overwriten.
+ - `firebase deploy` will deploy the static assets and security rules. Everything will be overwritten.
  - `firebase deploy:hosting` will deploy only the static assets.
  - `firebase deploy:rules` will deploy only security rules.
  - `firebase deploy -m 'message'` will include a version message.
