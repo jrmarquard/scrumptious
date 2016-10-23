@@ -17,7 +17,7 @@ public interface ProjectsRepository {
     void addUserToProject(String projectId, String userId);
 
     interface OnProjectRetrievedCallback {
-        void onProjectRetrieved(String projectId);
+        void onProjectRetrieved(Project project);
     }
 
     interface OnProjectsRetrievedCallback {

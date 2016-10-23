@@ -28,7 +28,13 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         UserProject project = dataSnapshot.getValue(UserProject.class);
-                        getProjectDetails(projects, dataSnapshot.getKey(), project.role, callback);
+                        getProjectDetails(dataSnapshot.getKey(), project.role, new OnProjectRetrievedCallback() {
+                            @Override
+                            public void onProjectRetrieved(Project project) {
+                                projects.add(project);
+                                callback.onProjectsRetrieved(projects);
+                            }
+                        });
                     }
 
                     @Override
@@ -53,8 +59,7 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
                 });
     }
 
-    private void getProjectDetails(final List<Project> projects, String projectId, final String role,
-                                   final OnProjectsRetrievedCallback callback) {
+    private void getProjectDetails(String projectId, final String role, final OnProjectRetrievedCallback callback) {
         mDatabase.getReference("projects").child(projectId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -62,8 +67,7 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
                         Project project = dataSnapshot.getValue(Project.class);
                         project.setRefId(dataSnapshot.getKey());
                         project.setRole(role);
-                        projects.add(project);
-                        callback.onProjectsRetrieved(projects);
+                        callback.onProjectRetrieved(project);
                     }
 
                     @Override
@@ -76,7 +80,7 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
     public void getDefaultProject(Context context, final OnProjectRetrievedCallback callback) {
         String projectId = SharedPreferencesUtil.getString(context, SharedPreferencesUtil.KEY_DEFAULT_PROJECT_ID);
         if (projectId != null) {
-            callback.onProjectRetrieved(projectId);
+            getProjectDetails(projectId, null, callback);
             return;
         }
 
@@ -86,7 +90,7 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot i : dataSnapshot.getChildren()) {
-                    callback.onProjectRetrieved(i.getKey());
+                    getProjectDetails(i.getKey(), null, callback);
                     break;
                 }
             }

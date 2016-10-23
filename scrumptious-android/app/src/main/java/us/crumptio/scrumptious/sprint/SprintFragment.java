@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import us.crumptio.scrumptious.R;
 import us.crumptio.scrumptious.ScrumBoardAdapter;
 import us.crumptio.scrumptious.UiUtils;
 import us.crumptio.scrumptious.createticket.CreateTicketActivity;
+import us.crumptio.scrumptious.model.Project;
 import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
 import us.crumptio.scrumptious.repositories.ProjectsRepository;
 
@@ -55,9 +57,10 @@ public class SprintFragment extends Fragment {
         super.onResume();
         mProjectsRepo.getDefaultProject(getContext(), new ProjectsRepository.OnProjectRetrievedCallback() {
             @Override
-            public void onProjectRetrieved(String projectId) {
-                mProjectId = projectId;
-                mViewPager.setAdapter(new ScrumBoardAdapter(getChildFragmentManager(), projectId));
+            public void onProjectRetrieved(Project project) {
+                mProjectId = project.getRefId();
+                mViewPager.setAdapter(new ScrumBoardAdapter(getChildFragmentManager(), mProjectId));
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(project.getTitle());
             }
         });
     }
