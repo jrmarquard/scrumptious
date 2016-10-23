@@ -36,7 +36,7 @@ public class FirebaseTicketsRepository extends BaseRepository implements Tickets
     }
 
     @Override
-    public void getTickets(String projectId, Ticket.Status status, final OnTicketsRetrievedListener listener) {
+    public void getTickets(String projectId, Ticket.Status status, Ticket.Sprint sprint, final OnTicketsRetrievedListener listener) {
 
         Query query = DB.getReference("projects").child(projectId).child("tickets")
                 .orderByChild("status").equalTo(status.toString().toLowerCase());

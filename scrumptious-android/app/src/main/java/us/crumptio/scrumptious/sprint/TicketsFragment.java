@@ -128,7 +128,7 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     @Override
     public void onResume() {
         super.onResume();
-        mTicketsRepo.getTickets(mProjectId, mStatus, this);
+        mTicketsRepo.getTickets(mProjectId, mStatus, Ticket.Sprint.CURRENT, this);
     }
 
     @Override

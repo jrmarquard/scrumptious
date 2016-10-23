@@ -20,21 +20,26 @@ public class Ticket implements Parcelable {
         }
     }
 
+    public enum Sprint {
+        BACKLOG,
+        CURRENT,
+        NEXT,
+        COMPLETED;
+
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
+    }
+
     private String mRefId;
     private String mTitle;
     private String mDescription;
     private String mAssignee;
     private float mPoints;
     private String mStatus;
-
-    public static Ticket newInstance() {
-        Ticket ticket = new Ticket();
-        ticket.setTitle("Design UI for Android App");
-        ticket.setAssignee("Aaron Darling");
-        ticket.setDescription("Make some wireframes and mockups for all the screens in the Android App.");
-        ticket.setPoints(3);
-        return ticket;
-    }
+    private String mSprint;
 
     public static final Parcelable.Creator<Ticket> CREATOR = new Parcelable.Creator<Ticket>() {
         public Ticket createFromParcel(Parcel in) {
@@ -45,6 +50,7 @@ public class Ticket implements Parcelable {
             ticket.setAssignee(in.readString());
             ticket.setPoints(in.readInt());
             ticket.setStatus(in.readString());
+            ticket.setSprint(in.readString());
             return ticket;
         }
 
@@ -66,6 +72,7 @@ public class Ticket implements Parcelable {
         parcel.writeString(mAssignee);
         parcel.writeFloat(mPoints);
         parcel.writeString(mStatus.toString());
+        parcel.writeString(mSprint.toString());
     }
 
     public void update(Ticket ticket) {
@@ -75,6 +82,7 @@ public class Ticket implements Parcelable {
             mAssignee = ticket.mAssignee;
             mPoints = ticket.mPoints;
             mStatus = ticket.mStatus;
+            mSprint = ticket.mSprint;
         }
     }
 
@@ -124,5 +132,13 @@ public class Ticket implements Parcelable {
 
     public void setStatus(String status) {
         mStatus = status.toLowerCase();
+    }
+
+    public String getSprint() {
+        return mSprint;
+    }
+
+    public void setSprint(String mSprint) {
+        this.mSprint = mSprint;
     }
 }
