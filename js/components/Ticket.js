@@ -24,13 +24,13 @@ export default class Ticket extends React.Component {
       var stateSelect = [];
       for(var k in this.props.states){
         if(this.props.states[k].key == this.props.ticket.status){
-          stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
+          stateSelect.push(<option key={k}  value={this.props.states[k].key}>{this.props.states[k].status}</option>);
         break;
         }
       }
       for(var k in this.props.states){
         if(this.props.states[k].key != this.props.ticket.status){
-          stateSelect.push(<option value={this.props.states[k].key}>{this.props.states[k].status}</option>);
+          stateSelect.push(<option key={k} value={this.props.states[k].key}>{this.props.states[k].status}</option>);
         }
       }
 

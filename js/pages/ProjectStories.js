@@ -16,7 +16,8 @@ export default class Stories extends React.Component {
         this.state = {
             stories : [],
             newStoryTitle : '',
-            newStoryDescription : ''
+            newStoryDescription : '',
+            storiesPanelDisplay : 'hidden'
         }
 
         // Storage for stories as objects
@@ -51,6 +52,14 @@ export default class Stories extends React.Component {
 
         // Stop listening to events from from the project's stories reference
         this.storiesRef.off();
+    }
+
+    componentDidUpdate() {
+        if (this.state.stories.length > 0) {
+            if (this.state.storiesPanelDisplay != 'show') this.setState({storiesPanelDisplay : 'show'})
+        } else {
+            if (this.state.storiesPanelDisplay != 'hidden') this.setState({storiesPanelDisplay : 'hidden'})
+        }
     }
 
     handleStories = (event, storyID, story) => {
@@ -93,26 +102,12 @@ export default class Stories extends React.Component {
 
                 {/* Stories content: filter box + stories feed */}
                 <Row class='show-grid'>
-                    <Col lg={2} md={3} xs={4}>
-                        {/*<Panel>
-                            <h3>Filters</h3>
-                            <ListGroup fill>
-                                <ListGroupItem>
-                                    Date
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    Status
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    Tag
-                                </ListGroupItem>
-                            </ListGroup>
-                        </Panel>*/}
+                    <Col xs={3}>
                         {/* Create new stories panel */}
                         <NewStoryPanel storiesRef={this.storiesRef}/>
                     </Col>
 
-                    <Col lg={10} md={9} xs={8}>
+                    <Col xs={9} class={this.state.storiesPanelDisplay}>
 
                         {/* Display new stories here */}
                         <Panel>

@@ -22,35 +22,34 @@ export default class Status extends React.Component {
         .catch(() => console.log('Failed to change ' + field + ' to ' + value + '.'));
     }
 
-
-
-
     render() {
-      const pop = (
-        <Popover class="popover-ticket" id="popover-trigger-click-root-close">
-            Status name: <br/> <strong>
-            <EditableTextView
-                value={this.props.status.status}
-                onChange={(data) => this.updateField('status', data)}
-            /></strong><br/>
-          <Button onClick={() => this.removeStatus(this.props.status.key)}>Remove Status <Glyphicon glyph="trash"/></Button>
-        </Popover>
-      );
+        const pop = (
+            <Popover class="popover-ticket" id="popover-trigger-click-root-close">
+                Status name: <br /> <strong>
+                    <EditableTextView
+                        value={this.props.status.status}
+                        onChange={(data) => this.updateField('status', data)}
+                        /></strong><br />
+                <Button onClick={() => this.removeStatus(this.props.status.key)}>Remove Status <Glyphicon glyph="trash" /></Button>
+            </Popover>
+        );
 
-      if(this.props.status.complete == true){
-        return(
-          <Panel id="state-board" class="no-padding" header={this.props.status.status}>
-          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel>
-        );
-      }else{
-        return(
-        <Panel id="state-board" class="no-padding" header={this.props.status.status}>
-            <OverlayTrigger trigger="click" rootClose placement="right" overlay={pop}>
-              <Button class="edit-status"><Glyphicon glyph="edit"/></Button>
-            </OverlayTrigger>
-          <ListGroup>{this.props.TicketComponents}</ListGroup></Panel>
-        );
-      }
+        if (this.props.status.complete == true) {
+            return (
+                <Panel id="state-board" class="no-padding" header={this.props.status.status}>
+                    <ListGroup>{this.props.TicketComponents}</ListGroup>
+                </Panel>
+            );
+        } else {
+            return (
+                <Panel id="state-board" class="no-padding" header={this.props.status.status}>
+                    <OverlayTrigger trigger="click" rootClose placement="right" overlay={pop}>
+                        <Button class="edit-status"><Glyphicon glyph="edit" /></Button>
+                    </OverlayTrigger>
+                    <ListGroup>{this.props.TicketComponents}</ListGroup>
+                </Panel>
+            );
+        }
     }
 
 }

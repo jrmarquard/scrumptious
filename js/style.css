@@ -424,7 +424,6 @@ div.notification {
   color: #ffffff;
 }
 
-/* John learning things */
 form#sign-in * {
     display: inline-block;
     margin: 0.5rem;
@@ -460,4 +459,8 @@ div.redirect-404 {
 div.nav-separator {
     border-left:#232323;
     height: 100%;
+}
+button.backlog-create-ticket, 
+button.backlog-ticket-item-delete {
+    float:right;
 }

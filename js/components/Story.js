@@ -25,7 +25,7 @@ export default class Story extends React.Component {
         var date = new Date(this.props.storyTime);
 
         return (
-            <Panel>
+            <Panel class='story-panel'>
                 <h3>{this.props.storyTitle}</h3>
                 <p>{this.props.storyDescription}</p>
                 <p>Created on: {date.toString()}</p>

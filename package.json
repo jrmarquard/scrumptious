@@ -28,9 +28,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "deploy": "PRODUCTION=true webpack && firebase use scrumptious-a4bc9 && firebase deploy",
-    "dev": "webpack-dev-server --content-base public --inline --hot",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "webpack --config webpack.config-deploy.js && firebase use scrumptious-a4bc9 && firebase deploy",
+    "serve": "webpack-dev-server --config webpack.config-development.js --content-base public --inline --hot"
   },
   "author": "",
   "license": "ISC",

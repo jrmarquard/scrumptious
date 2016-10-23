@@ -39,7 +39,7 @@ export default class NewStoryPanel extends React.Component {
     render() {
 
         return (
-            <PanelGroup accordion>
+            <PanelGroup>
                 <Panel header="Add new story" class="pointer" eventKey="1">
                     {/* New story title */}
                     <FormGroup controlId="formBasicText" validationState={this.getTitleValidation()}>

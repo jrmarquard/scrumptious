@@ -17,11 +17,11 @@ export default class ProjectBacklog extends React.Component {
             ticketsBacklog: [],
             ticketsNextSprint: [],
             showModal: false,
-            newTicketTitle: 'Add title',
-            newTicketDescription: 'Add Description',
-            newTicketAssignee: 'Add Assignee',
+            newTicketTitle: '',
+            newTicketDescription: '',
+            newTicketAssignee: '',
             newTicketPoints: 1,
-            newTicketStatus: 'none'
+            newTicketStatus: ''
         }
 
         this._didTicketsUpdate = false;
@@ -86,11 +86,11 @@ export default class ProjectBacklog extends React.Component {
         var key = firebase.createTicket(this.state.newTicketTitle,this.state.newTicketDescription,this.state.newTicketStatus,this.state.newTicketAssignee,this.state.newTicketPoints);
         this.setState({
            showModal: false,
-           newTicketTitle: 'Add title',
-           newTicketDescription: 'Add Description',
-           newTicketAssignee: 'Add Assignee',
+           newTicketTitle: '',
+           newTicketDescription: '',
+           newTicketAssignee: '',
            newTicketPoints: 1,
-           newTicketStatus: 'none'
+           newTicketStatus: ''
           });
     }
 
@@ -105,7 +105,6 @@ export default class ProjectBacklog extends React.Component {
       };
 
       this.setState( {statuses : this.statuses} );
-
     }
 
     closeNewTicketModal = () => {
@@ -113,14 +112,14 @@ export default class ProjectBacklog extends React.Component {
     }
 
     openNewTicketModal = () => {
-      var first;
-      for( var key in this.state.statuses){
-        if(this.state.statuses[key].order == 1){
-         first = this.state.statuses[key].key;
-         break;
+        var first;
+        for (var key in this.state.statuses) {
+            if (this.state.statuses[key].order == 1) {
+                first = this.state.statuses[key].key;
+                break;
+            }
         }
-      }
-      this.setState({ showModal: true, newTicketStatus: first });
+        this.setState({ showModal: true, newTicketStatus: first });
     }
 
     componentDidUpdate() {
@@ -210,7 +209,7 @@ export default class ProjectBacklog extends React.Component {
         //add statuses to a select box friendly format
         var stateSelect = [];
         for(var k in states){
-          stateSelect.push(<option value={states[k].key}>{states[k].status}</option>);
+          stateSelect.push(<option key={k} value={states[k].key}>{states[k].status}</option>);
         }
 
         return (
@@ -218,10 +217,10 @@ export default class ProjectBacklog extends React.Component {
                 <Grid>
                     <Row>
                         <Col xs={4}>
-                            <h1>Backlog
-
-                                <Button onClick={() => this.openNewTicketModal()}>
-                                    Add Ticket
+                            <h1>
+                                Backlog
+                                <Button bsStyle='success' class='backlog-create-ticket' onClick={() => this.openNewTicketModal()}>
+                                    Create Ticket
                                 </Button>
                             </h1>
                         </Col>
@@ -246,54 +245,53 @@ export default class ProjectBacklog extends React.Component {
                     </Row>
                 </Grid>
                 <Modal show={this.state.showModal} onHide={() => this.closeNewTicketModal()}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Create New Ticket</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form horizontal>
-                      <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
-                          Title
-                        </Col>
-                        <Col sm={10}>
-                          <FormControl onChange={(e) => this.setState({newTicketTitle: e.target.value})} type="text" placeholder="Title of ticket" />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
-                          Assignee
-                        </Col>
-                        <Col sm={10}>
-                          <FormControl onChange={(e) => this.setState({newTicketAssignee: e.target.value})} type="text" placeholder="Assign a ticket to a person" />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
-                          Description
-                        </Col>
-                        <Col sm={10}>
-                          <FormControl onChange={(e) => this.setState({newTicketDescription: e.target.value})} type="text" componentClass="textarea" placeholder="Enter a short description" />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup controlId="formControlsSelect">
-                        <Col componentClass={ControlLabel} sm={2}>
-                          Select a board
-                        </Col>
-                        <Col sm={10}>
-                          <FormControl   onChange={(e) => this.setState({newTicketStatus: e.target.value})} componentClass="select">
-                            {stateSelect}
-                          </FormControl>
-                        </Col>
-                      </FormGroup>
-                    </Form>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button onClick={this.closeNewTicketModal}>Close</Button>
-                    <Button class="add-ticket" onClick={() => this.createTicket()}><Glyphicon glyph="plus"/> Create Ticket</Button>
-                  </Modal.Footer>
-              </Modal>
-          </div>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Create New Ticket</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form horizontal>
+                            <FormGroup>
+                                <Col componentClass={ControlLabel} sm={2}>
+                                    Title
+                                </Col>
+                                <Col sm={10}>
+                                    <FormControl onChange={(e) => this.setState({ newTicketTitle: e.target.value })} type="text" placeholder="Title of ticket" />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Col componentClass={ControlLabel} sm={2}>
+                                    Assignee
+                                </Col>
+                                <Col sm={10}>
+                                    <FormControl onChange={(e) => this.setState({ newTicketAssignee: e.target.value })} type="text" placeholder="Assign a ticket to a person" />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Col componentClass={ControlLabel} sm={2}>
+                                    Description
+                                </Col>
+                                <Col sm={10}>
+                                    <FormControl onChange={(e) => this.setState({ newTicketDescription: e.target.value })} type="text" componentClass="textarea" placeholder="Enter a short description" />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup controlId="formControlsSelect">
+                                <Col componentClass={ControlLabel} sm={2}>
+                                    Select a board
+                                </Col>
+                                <Col sm={10}>
+                                    <FormControl onChange={(e) => this.setState({ newTicketStatus: e.target.value })} componentClass="select">
+                                        {stateSelect}
+                                    </FormControl>
+                                </Col>
+                            </FormGroup>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.closeNewTicketModal}>Close</Button>
+                        <Button class="add-ticket" onClick={() => this.createTicket()}><Glyphicon glyph="plus" /> Create Ticket</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         );
     }
-
 }

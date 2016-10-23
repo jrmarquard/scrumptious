@@ -26,6 +26,10 @@ export default class BacklogTicketItem extends React.Component {
         this.ticketRef.update({sprint:'backlog'});
     }
 
+    deleteTicket = () => {
+        this.ticketRef.remove();
+    }
+
     render() {
         var button = '';
         if (this.props.ticketSprint === 'backlog') {
@@ -45,15 +49,16 @@ export default class BacklogTicketItem extends React.Component {
             <ListGroupItem>
                 <Grid>
                     <Row>
-                        <Col xs={8}>
-                            <h3>{this.props.ticketTitle}</h3>
-                        </Col>
-                        <Col xs={4}>
-                            {button}
-                        </Col>
+                        <h3>{this.props.ticketTitle}</h3>
                     </Row>
                     <Row>
                         <p>{this.props.ticketDescription}</p>
+                    </Row>
+                    <Row>
+                        {button}
+                        <Button class='backlog-ticket-item-delete' bsStyle='danger' onClick={() => this.deleteTicket()}>
+                            Delete Ticket
+                        </Button>
                     </Row>
                 </Grid>
             </ListGroupItem>
