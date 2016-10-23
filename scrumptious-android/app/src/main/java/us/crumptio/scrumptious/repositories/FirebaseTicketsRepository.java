@@ -100,6 +100,21 @@ public class FirebaseTicketsRepository extends BaseRepository implements Tickets
 
     }
 
+    @Override
+    public void updateTicket(String projectId, final Ticket ticket, final OnTicketCreatedCallback callback) {
+        DB.getReference("projects")
+                .child(projectId)
+                .child("tickets")
+                .child(ticket.getRefId())
+                .setValue(ticket)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onTicketCreated(ticket.getRefId());
+                    }
+                });
+    }
+
     private static Ticket snapshotToTicket(DataSnapshot dataSnapshot) {
         Ticket ticket = dataSnapshot.getValue(Ticket.class);
         ticket.setRefId(dataSnapshot.getRef().getKey());

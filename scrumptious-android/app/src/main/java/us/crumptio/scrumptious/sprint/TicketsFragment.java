@@ -118,7 +118,7 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
                     @Override
                     public void onViewEvent(int actionId, Ticket ticket, int position, View view) {
                         if (actionId == TicketView.CLICKED) {
-                            CreateTicketActivity.openActivity(getActivity(), mProjectId);
+                            CreateTicketActivity.openActivity(getActivity(), mProjectId, ticket);
                         }
                     }
                 })

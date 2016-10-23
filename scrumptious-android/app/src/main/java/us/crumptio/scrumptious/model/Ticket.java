@@ -48,7 +48,7 @@ public class Ticket implements Parcelable {
             ticket.setTitle(in.readString());
             ticket.setDescription(in.readString());
             ticket.setAssignee(in.readString());
-            ticket.setPoints(in.readInt());
+            ticket.setPoints(in.readFloat());
             ticket.setStatus(in.readString());
             ticket.setSprint(in.readString());
             return ticket;
@@ -71,8 +71,8 @@ public class Ticket implements Parcelable {
         parcel.writeString(mDescription);
         parcel.writeString(mAssignee);
         parcel.writeFloat(mPoints);
-        parcel.writeString(mStatus.toString());
-        parcel.writeString(mSprint.toString());
+        parcel.writeString(mStatus != null ? mStatus.toString() : null);
+        parcel.writeString(mSprint != null ? mSprint.toString() : null);
     }
 
     public void update(Ticket ticket) {

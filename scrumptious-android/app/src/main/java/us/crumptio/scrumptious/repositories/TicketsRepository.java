@@ -12,6 +12,7 @@ public interface TicketsRepository {
     void getTickets(String projectId, OnTicketsRetrievedListener listener);
     void getTickets(String projectId, Ticket.Status status, Ticket.Sprint sprint, OnTicketsRetrievedListener listener);
     void createTicket(String projectId, Ticket ticket, OnTicketCreatedCallback callback);
+    void updateTicket(String projectId, Ticket ticket, OnTicketCreatedCallback callback);
 
     interface OnTicketsRetrievedListener {
         void onTicketsRetrieved(List<Ticket> tickets);

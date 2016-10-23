@@ -1,6 +1,7 @@
 package us.crumptio.scrumptious.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -51,6 +52,11 @@ public class TicketView extends BindableRelativeLayout<Ticket> implements View.O
         mPoints.setText(ticket.getPoints() == (int) ticket.getPoints()
                 ? String.format("%d", (int) ticket.getPoints()) : String.valueOf(ticket.getPoints()));
         mDescription.setText(ticket.getDescription());
+        if (ticket.getDescription() == null || TextUtils.isEmpty(ticket.getDescription().trim())) {
+            mDescription.setVisibility(View.GONE);
+        } else {
+            mDescription.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
