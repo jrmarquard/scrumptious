@@ -33,7 +33,7 @@ import us.crumptio.scrumptious.view.TicketView;
 public class TicketsFragment extends Fragment implements TicketsRepository.OnTicketsRetrievedListener {
 
     private static final String ARG_PROJECT_ID = "arg_project_id";
-    private static final String ARG_STATUS = "arg_status";
+    private static final String ARG_STATUS_ID = "arg_status_id";
 
     private static final String SIS_TICKETS = "sis_tickets";
 
@@ -52,17 +52,17 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     ProgressBar mProgressBar;
 
     private String mProjectId;
-    private Ticket.Status mStatus;
+    private String mStatusId;
 
     private RecyclerMultiAdapter mAdapter;
     private List<Ticket> mTickets;
 
-    public static TicketsFragment newInstance(String projectId, Ticket.Status status) {
+    public static TicketsFragment newInstance(String projectId, String statusId) {
         TicketsFragment frag = new TicketsFragment();
         Bundle args = new Bundle();
 
         args.putString(ARG_PROJECT_ID, projectId);
-        args.putInt(ARG_STATUS, status.ordinal());
+        args.putString(ARG_STATUS_ID, statusId);
 
         frag.setArguments(args);
         return frag;
@@ -71,8 +71,8 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(ARG_STATUS)) {
-            mStatus = Ticket.Status.values()[getArguments().getInt(ARG_STATUS)];
+        if (getArguments() != null && getArguments().containsKey(ARG_STATUS_ID)) {
+            mStatusId = getArguments().getString(ARG_STATUS_ID);
         }
         if (getArguments() != null && getArguments().containsKey(ARG_PROJECT_ID)) {
             mProjectId = getArguments().getString(ARG_PROJECT_ID);
@@ -93,20 +93,23 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mTitle.setText(mStatus.toString().replace('_', ' ').toUpperCase());
-        switch (mStatus) {
-            case TO_DO:
+        String status = FirebaseUtil.tickets.getStatus(mProjectId, mStatusId);
+        mTitle.setText(status.replace('_', ' ').toUpperCase());
+        switch (mStatusId) {
+            case "TO DO":
                 mTitle.setBackgroundResource(R.drawable.blue_rounded_rectangle);
                 break;
-            case IN_PROGRESS:
+            case "IN PROGRESS":
                 mTitle.setBackgroundResource(R.drawable.yellow_rounded_rectangle);
                 break;
-            case CODE_REVIEW:
+            case "CODE REVIEW":
                 mTitle.setBackgroundResource(R.drawable.orange_rounded_rectangle);
                 break;
-            case DONE:
+            case "DONE":
                 mTitle.setBackgroundResource(R.drawable.green_rounded_rectangle);
                 break;
+            default:
+                mTitle.setBackgroundResource(R.drawable.blue_rounded_rectangle);
         }
 
         mList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -126,7 +129,7 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     @Override
     public void onResume() {
         super.onResume();
-        FirebaseUtil.tickets.getTickets(mProjectId, mStatus, Ticket.Sprint.CURRENT, this);
+        FirebaseUtil.tickets.getTickets(mProjectId, mStatusId, Ticket.Sprint.CURRENT, this);
     }
 
     @Override

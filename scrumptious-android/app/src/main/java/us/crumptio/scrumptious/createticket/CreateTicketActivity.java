@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -48,6 +50,7 @@ public class CreateTicketActivity extends BaseActivity {
 
     private String mProjectId = null;
     private Ticket mTicket;
+    private List<String> mStatuses;
 
     public static void openActivity(FragmentActivity activity, String projectId) {
         Intent intent = new Intent(activity, CreateTicketActivity.class);
@@ -70,17 +73,23 @@ public class CreateTicketActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("New Ticket");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.li_status, new String[]{
-                "To Do",
-                "In Progress",
-                "Code Review",
-                "Done"
-        });
-        mStatusDropdown.setAdapter(adapter);
-
         if (getIntent().hasExtra(ARG_PROJECT_ID)) {
             mProjectId = getIntent().getStringExtra(ARG_PROJECT_ID);
         }
+
+        FirebaseUtil.tickets.getStatuses(mProjectId, new TicketsRepository.OnStatusesRetrievedListener() {
+            @Override
+            public void onStatusesRetrieved(List<String> statuses) {
+                mStatuses = statuses;
+                String[] strings = new String[statuses.size()];
+                for (int i = 0; i < statuses.size(); ++i) {
+                    strings[i] = FirebaseUtil.tickets.getStatus(mProjectId, statuses.get(i));
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateTicketActivity.this,
+                        R.layout.li_status, strings);
+                mStatusDropdown.setAdapter(adapter);
+            }
+        });
 
         if (getIntent().hasExtra(ARG_TICKET)) {
             mTicket = getIntent().getParcelableExtra(ARG_TICKET);
@@ -91,17 +100,18 @@ public class CreateTicketActivity extends BaseActivity {
             mAssignee.setText(mTicket.getAssignee());
             mPoints.setText(mTicket.getPoints() == (int) mTicket.getPoints()
                     ? String.format("%d", (int) mTicket.getPoints()) : String.valueOf(mTicket.getPoints()));
-            switch (Ticket.Status.valueOf(mTicket.getStatus().toUpperCase())) {
-                case TO_DO:
+            String status = FirebaseUtil.tickets.getStatus(mProjectId, mTicket.getStatus());
+            switch (status) {
+                case "To Do":
                     mStatusDropdown.setSelection(0);
                     break;
-                case IN_PROGRESS:
+                case "In Progress":
                     mStatusDropdown.setSelection(1);
                     break;
-                case CODE_REVIEW:
+                case "Code Review":
                     mStatusDropdown.setSelection(2);
                     break;
-                case DONE:
+                case "Done":
                     mStatusDropdown.setSelection(3);
                     break;
             }
@@ -117,21 +127,7 @@ public class CreateTicketActivity extends BaseActivity {
         mTicket.setAssignee(mAssignee.getText().toString());
         mTicket.setPoints(!TextUtils.isEmpty(mPoints.getText().toString()) ?
                 Float.parseFloat(mPoints.getText().toString()) : 0);
-        mTicket.setStatus(Ticket.Status.TO_DO.toString());
-        switch (mStatusDropdown.getSelectedItemPosition()) {
-            case 0:
-                mTicket.setStatus(Ticket.Status.TO_DO.toString());
-                break;
-            case 1:
-                mTicket.setStatus(Ticket.Status.IN_PROGRESS.toString());
-                break;
-            case 2:
-                mTicket.setStatus(Ticket.Status.CODE_REVIEW.toString());
-                break;
-            case 3:
-                mTicket.setStatus(Ticket.Status.DONE.toString());
-                break;
-        }
+        mTicket.setStatus(mStatuses.get(mStatusDropdown.getSelectedItemPosition()));
         if (!TextUtils.isEmpty(mTicket.getRefId())) {
             FirebaseUtil.tickets.updateTicket(mProjectId, mTicket, new TicketsRepository.OnTicketCreatedCallback() {
                 @Override

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,6 +20,7 @@ import us.crumptio.scrumptious.UiUtils;
 import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.model.Project;
 import us.crumptio.scrumptious.repositories.ProjectsRepository;
+import us.crumptio.scrumptious.repositories.TicketsRepository;
 import us.crumptio.scrumptious.util.FirebaseUtil;
 
 /**
@@ -57,7 +60,12 @@ public class SprintFragment extends Fragment {
             @Override
             public void onProjectRetrieved(Project project) {
                 mProjectId = project.getRefId();
-                mViewPager.setAdapter(new ScrumBoardAdapter(getChildFragmentManager(), mProjectId));
+                FirebaseUtil.tickets.getStatuses(mProjectId, new TicketsRepository.OnStatusesRetrievedListener() {
+                    @Override
+                    public void onStatusesRetrieved(List<String> statuses) {
+                        mViewPager.setAdapter(new ScrumBoardAdapter(getChildFragmentManager(), mProjectId, statuses));
+                    }
+                });
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(project.getTitle());
             }
         });

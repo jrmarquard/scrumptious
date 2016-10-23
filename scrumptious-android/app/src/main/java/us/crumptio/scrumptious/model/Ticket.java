@@ -8,18 +8,6 @@ import android.os.Parcelable;
  */
 public class Ticket implements Parcelable {
 
-    public enum Status {
-        TO_DO,
-        IN_PROGRESS,
-        CODE_REVIEW,
-        DONE;
-
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase();
-        }
-    }
-
     public enum Sprint {
         BACKLOG,
         CURRENT,
@@ -71,8 +59,8 @@ public class Ticket implements Parcelable {
         parcel.writeString(mDescription);
         parcel.writeString(mAssignee);
         parcel.writeFloat(mPoints);
-        parcel.writeString(mStatus != null ? mStatus.toString() : null);
-        parcel.writeString(mSprint != null ? mSprint.toString() : null);
+        parcel.writeString(mStatus);
+        parcel.writeString(mSprint);
     }
 
     public void update(Ticket ticket) {
@@ -131,7 +119,7 @@ public class Ticket implements Parcelable {
     }
 
     public void setStatus(String status) {
-        mStatus = status.toLowerCase();
+        mStatus = status;
     }
 
     public String getSprint() {
