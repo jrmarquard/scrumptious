@@ -7,7 +7,7 @@ import { Grid, Col, Row, Panel, PanelGroup, ListGroup, ListGroupItem, FormGroup,
 import Story from '../components/Story.js';
 import NewStoryPanel from '../components/NewStoryPanel.js';
 
-export default class Stories extends React.Component { 
+export default class Stories extends React.Component {
 
     constructor() {
         super();
@@ -54,9 +54,9 @@ export default class Stories extends React.Component {
     }
 
     handleStories = (event, storyID, story) => {
-        // Add, change, or remove 
+        // Add, change, or remove
         if (event === 'child_added' || event === 'child_changed') {
-            this.stories[storyID] = story;    
+            this.stories[storyID] = story;
         } else if (event === 'child_removed') {
             delete this.stories[storyID];
         }
@@ -66,8 +66,8 @@ export default class Stories extends React.Component {
         for (var id in this.stories) {
             var s = this.stories[id];
             newStories.push(
-                <Story 
-                    key={id} 
+                <Story
+                    key={id}
                     projectID={this.projectID}
                     storyID={id}
                     storyTitle={s.title}
@@ -78,7 +78,7 @@ export default class Stories extends React.Component {
         }
 
         // If the page is still mounted set a new state
-        if (this._isMounted) this.setState({stories:newStories});        
+        if (this._isMounted) this.setState({stories:newStories});
     }
 
     render() {
@@ -94,7 +94,7 @@ export default class Stories extends React.Component {
                 {/* Stories content: filter box + stories feed */}
                 <Row class='show-grid'>
                     <Col lg={2} md={3} xs={4}>
-                        <Panel>
+                        {/*<Panel>
                             <h3>Filters</h3>
                             <ListGroup fill>
                                 <ListGroupItem>
@@ -107,7 +107,7 @@ export default class Stories extends React.Component {
                                     Tag
                                 </ListGroupItem>
                             </ListGroup>
-                        </Panel>
+                        </Panel>*/}
                         {/* Create new stories panel */}
                         <NewStoryPanel storiesRef={this.storiesRef}/>
                     </Col>
@@ -117,7 +117,7 @@ export default class Stories extends React.Component {
                         {/* Display new stories here */}
                         <Panel>
                             {this.state.stories}
-                        </Panel>                        
+                        </Panel>
                     </Col>
                 </Row>
             </Grid>

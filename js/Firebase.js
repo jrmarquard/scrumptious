@@ -48,6 +48,7 @@ firebase.addCurrentUser = (name, userName) => {
  *  title: title of the project
  */
 firebase.createProject = (userID, title) => {
+    console.log('makign project');
 
     var userID = userID;
 
@@ -83,6 +84,8 @@ firebase.createProject = (userID, title) => {
         console.log('Failed to create new project');
         console.log(error);
     });
+
+
 }
 
 firebase.completeSprint = (projectId) => {
@@ -93,7 +96,12 @@ firebase.completeSprint = (projectId) => {
             var tickets = data.val();
             for (var id in tickets) {
                 var ticket = tickets[id];
-                if (ticket.status == 'done') {
+                var sta;
+                firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+ ticket.status).on('value', (data) => {
+                    sta = data.val();
+                    console.log(status);
+                  })
+                if (sta.complete == true) {
                     ticket.sprint = 'completed';
                 } else {
                     ticket.sprint = 'next';
@@ -187,15 +195,24 @@ firebase.addUserToProject = (projectID, user) => {
          sprint: 'backlog'
      });
  }
- firebase.createStatus = (status,order) => {
-     key = firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
+ firebase.createStatus = (status,order,isComplete) => {
+     key = firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses')
      .push({
          status:status,
-         order:order
+         order:order,
+         complete:isComplete
      });
      return key.getKey();
  }
- firebase.updateStatus = (data) => {
+ firebase.createStatusProject = (status,order,isComplete,currentProjectID) => {
+      firebase.database().ref('projects/'+currentProjectID+'/statuses')
+     .push({
+         status:status,
+         order:order,
+         complete:isComplete
+     });
+ }
+ firebase.updateStatus = (key, data) => {
      firebase.database().ref('projects/'+firebase.currentProjectID+'/status/'+key).update(data)
  }
 
@@ -209,12 +226,28 @@ firebase.deleteTicket = (key) => {
     .catch((err) => console.log(err));
 }
 
+firebase.deleteStatus = (key) => {
+    firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses').child(key)
+    .remove()
+    .catch((err) => console.log(err));
+}
+
 firebase.getTicket = (key) => {
     // returns a promise
     return firebase.database().ref('tickets').once('value', (data) => {
         console.log(data);
     });
 }
+firebase.createStatus = (status,order) => {
+      firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses')
+     .push({
+         status:status,
+         order:order
+     });
+ }
+ firebase.updateStatus = (key,data) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/statuses/'+key).update(data)
+ }
 
 firebase.getTicketsBySprint = (projectId, sprint, cb) => {
     var tickets = {};

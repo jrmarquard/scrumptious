@@ -59,9 +59,6 @@ export default class NNav extends React.Component {
         if(this.props.isProjectActive) {
             projectPanel =
                 <Nav id='nav-project'>
-                    <LinkContainer to={'/project/' + this.props.projectID + '/overview'}>
-                        <NavItem>Project Overview</NavItem>
-                    </LinkContainer>
                     <LinkContainer to={'/project/' + this.props.projectID + '/sprint'}>
                         <NavItem>Sprint</NavItem>
                     </LinkContainer>

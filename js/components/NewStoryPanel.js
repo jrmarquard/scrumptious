@@ -40,7 +40,7 @@ export default class NewStoryPanel extends React.Component {
 
         return (
             <PanelGroup accordion>
-                <Panel header="Add new story" eventKey="1">
+                <Panel header="Add new story" class="pointer" eventKey="1">
                     {/* New story title */}
                     <FormGroup controlId="formBasicText" validationState={this.getTitleValidation()}>
                         <ControlLabel>Title</ControlLabel>
@@ -48,14 +48,14 @@ export default class NewStoryPanel extends React.Component {
                             type="text"
                             placeholder="Enter title"
                             onChange={(e) => this.setState({newStoryTitle : e.target.value})}
-                            onKeyPress={(e) => {if (e.keyCode || e.which == 13) this.addStory()}}                              
+                            onKeyPress={(e) => {if (e.keyCode || e.which == 13) this.addStory()}}
                             />
                     </FormGroup>
-                    
+
                     {/* New story description */}
                     <FormGroup controlId="formControlsTextarea">
                         <ControlLabel>Description</ControlLabel>
-                        <FormControl 
+                        <FormControl
                             componentClass="textarea"
                             type="text"
                             placeholder="Enter description"
@@ -63,7 +63,7 @@ export default class NewStoryPanel extends React.Component {
                             />
                     </FormGroup>
                     <Button
-                        bsStyle="success" 
+                        bsStyle="success"
                         onClick={() => this.addStory()}>
                         Create new story
                     </Button>
