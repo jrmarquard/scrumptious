@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.devspark.robototextview.widget.RobotoTextView;
 
@@ -45,6 +46,12 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
 
     @BindView(R.id.list)
     RecyclerView mList;
+
+    @BindView(R.id.content)
+    View mContent;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     private String mProjectId;
     private Ticket.Status mStatus;
@@ -128,6 +135,8 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     public void onTicketsRetrieved(List<Ticket> tickets) {
         mTickets = tickets;
         mAdapter.setItems(mTickets);
+        mContent.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
