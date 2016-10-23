@@ -8,9 +8,6 @@ export default class SignIn extends React.Component {
     // Signs the user in
     signIn = () => {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then(() => {
-            console.log('logged in successfully');
-        })
         .catch((error) => console.log(error));
     };
 
