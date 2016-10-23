@@ -6,7 +6,7 @@ import { FormGroup, ControlLabel, FormControl, Button, Panel, ListGroup, ListGro
 
 import EditableTextView from '../components/EditableTextView.js';
 
-export default class AppConfiguration extends React.Component {
+export default class UserSettings extends React.Component {
 
     constructor() {
         super();

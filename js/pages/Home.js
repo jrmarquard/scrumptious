@@ -1,5 +1,5 @@
 import React from 'react';
-
+import firebase from 'firebase';
 import Notifications from "../components/Notifications.js"
 import Projects from "../components/Projects.js"
 import { Link } from "react-router";
@@ -19,7 +19,7 @@ export default class Home extends React.Component {
         this.onAuthChangeUnsub = firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({
-                    componentContent : 
+                    componentContent :
                         <div>
                             <Notifications />
                             <Projects />

@@ -12,12 +12,11 @@ import { Router, Route, Redirect, IndexRoute, IndexRedirect, hashHistory } from 
 // Pages
 import Home from "./pages/Home.js";
 import Interface from "./pages/Interface.js";
-import ProjectBoard from "./pages/ProjectBoard.js";
+import Sprint from "./pages/Sprint.js";
+import ProjectBacklog from "./pages/ProjectBacklog.js";
 import ProjectContent from "./pages/ProjectContent.js";
 import ProjectOverview from "./pages/ProjectOverview.js";
 import ProjectSettings from "./pages/ProjectSettings.js";
-import ProjectSprint from "./pages/ProjectSprint.js";
-import ProjectSprints from "./pages/ProjectSprints.js";
 import ProjectStories from "./pages/ProjectStories.js";
 import Redirect404 from "./pages/Redirect404.js";
 import SignUp from "./pages/SignUp.js";
@@ -44,9 +43,8 @@ class Scrumptious extends React.Component {
                     <Route path="project/:projectID" component={ProjectContent}>
                         <IndexRedirect from="" to="overview" />
                         <Route path="overview" component={ProjectOverview} />
-                        <Route path="board" component={ProjectBoard} />
-                        <Route path="sprint/:sprintID" component={ProjectSprint} />
-                        <Route path="sprints" component={ProjectSprints} />
+                        <Route path="sprint" component={Sprint} />
+                        <Route path="backlog" component={ProjectBacklog} />
                         <Route path="stories" component={ProjectStories} />
                         <Route path="settings" component={ProjectSettings} >
                             <IndexRedirect from="" to="options" />

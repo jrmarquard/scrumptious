@@ -42,7 +42,7 @@ firebase.addCurrentUser = (name, userName) => {
 /**
  *  Create a project.
  *   - Create the project in /projects/
- *   - Create a reference to that project in the user's projects/ 
+ *   - Create a reference to that project in the user's projects/
  *
  *  user: user id of the owner of the project
  *  title: title of the project
@@ -85,10 +85,44 @@ firebase.createProject = (userID, title) => {
     });
 }
 
+firebase.completeSprint = (projectId) => {
+    firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('current')
+        .once('value', (data) => {
+            var tickets = data.val();
+            for (var id in tickets) {
+                var ticket = tickets[id];
+                if (ticket.status == 'done') {
+                    ticket.sprint = 'completed';
+                } else {
+                    ticket.sprint = 'next';
+                }
+                firebase.database().ref('projects').child(projectId)
+                    .child('tickets').child(id).set(ticket);
+            }
+        });
+}
+
+firebase.startSprint = (projectId) => {
+    firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('next')
+        .once('value', (data) => {
+            var tickets = data.val();
+            for (var id in tickets) {
+                var ticket = tickets[id];
+                ticket.sprint = 'current';
+                firebase.database().ref('projects').child(projectId)
+                    .child('tickets').child(id).set(ticket);
+            }
+        });
+}
+
 /**
  *  Delete a project.
  *   - Delete the project in /projects/
- *   - Remove the reference to the proejct in every user in that project 
+ *   - Remove the reference to the proejct in every user in that project
  */
 firebase.deleteProject = (projectID) => {
     // Save projectID
@@ -120,7 +154,7 @@ firebase.deleteProject = (projectID) => {
  *   - Update the project with
  */
 firebase.updateProject = () => {
-    // TODO: 
+    // TODO:
 }
 
 /**
@@ -128,29 +162,42 @@ firebase.updateProject = () => {
  *   - Update the project with
  */
 firebase.addUserToProject = (projectID, user) => {
-    // TODO: 
+    // TODO:
 }
 
 
 /***********
  * Tickets
  *
- * Ticket funcionality for current project. 
+ * Ticket funcionality for current project.
  * Current project must be set.
  */
 
 /**
  *  Ticket funcionality for current project. Current project must be set.
  */
-firebase.createTicket = (title, description, state, priority) => {
-    firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets')
-    .push({
-        title: title,
-        description: description,
-        state: state,
-        priority: priority,
-    });
-}
+ firebase.createTicket = (title, description, status, assignee, points) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets')
+     .push({
+         title: title,
+         description: description,
+         status: status,
+         assignee: assignee,
+         points: points,
+         sprint: 'backlog'
+     });
+ }
+ firebase.createStatus = (status,order) => {
+     key = firebase.database().ref('projects/'+firebase.currentProjectID+'/status')
+     .push({
+         status:status,
+         order:order
+     });
+     return key.getKey();
+ }
+ firebase.updateStatus = (data) => {
+     firebase.database().ref('projects/'+firebase.currentProjectID+'/status/'+key).update(data)
+ }
 
 firebase.updateTicket = (key, data) => {
     firebase.database().ref('projects/'+firebase.currentProjectID+'/tickets/'+key).update(data);
@@ -169,8 +216,51 @@ firebase.getTicket = (key) => {
     });
 }
 
+firebase.getTicketsBySprint = (projectId, sprint, cb) => {
+    var tickets = {};
+    var query = firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo(sprint);
+
+    query.on('child_added', (data) => {
+        var ticket = data.val();
+        tickets[data.key] = ticket;
+        cb(tickets);
+    });
+    query.on('child_changed', (data) => {
+        var ticket = data.val();
+        if (data.key in tickets) {
+            tickets[data.key] = ticket;
+        }
+        cb(tickets);
+    });
+    query.on('child_removed', (data) => {
+        var ticket = data.val();
+        if (data.key in tickets) {
+            delete tickets[data.key];
+        }
+        cb(tickets);
+    });
+    return () => {
+        query.off();
+    };
+}
+
+firebase.hasActiveSprint = (projectId, cb) => {
+    var query = firebase.database().ref('projects').child(projectId).child('tickets')
+        .orderByChild('sprint')
+        .equalTo('current')
+        .limitToFirst(1);
+    query.on('value', (data) => {
+        cb(data.val() != null);
+    });
+    return () => {
+        query.off();
+    };
+}
+
 /*************
- * Listeners 
+ * Listeners
  *
  * Events
  *  - project_change: this fires whenever the project is changed, giving the
@@ -203,5 +293,3 @@ firebase.setCurrentProject = (projectID) => {
         if (f !== null) f(firebase.currentProjectID);
     });
 }
-
-
