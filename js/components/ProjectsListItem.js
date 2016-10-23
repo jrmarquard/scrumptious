@@ -25,8 +25,8 @@ export default class ProjectsListItem extends React.Component {
         this.projectRef = firebase.database().ref('/');
 
         // When the auth state changes, subscribte to firebase references
-        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {  
-            // Watches for projects in userID/projects/ 
+        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {
+            // Watches for projects in userID/projects/
             this.projectRef = firebase.database().ref('projects/'+this.props.projectID);
 
             this.projectRef.on('value', (data) => this.handleProject('value', data.key, data.val()));
@@ -45,7 +45,7 @@ export default class ProjectsListItem extends React.Component {
     render() {
         return (
             <div class='projects-list-item'>
-                <Link to={'/project/' + this.props.projectID + '/overview'}>
+                <Link to={'/project/' + this.props.projectID + '/sprint'}>
                     <div class='projects-list-item-header'>
                         {this.state.projectTitle}
                     </div>

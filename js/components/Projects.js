@@ -27,8 +27,8 @@ export default class Projects extends React.Component {
         this.userProjects = firebase.database().ref('/');
 
         // When the auth state changes, subscribte to firebase references
-        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {  
-            // Watches for projects in userID/projects/ 
+        this.authUnsub = firebase.auth().onAuthStateChanged((user) => {
+            // Watches for projects in userID/projects/
             this.userProjects = firebase.database().ref('users/'+user.uid+'/projects');
 
             this.userProjects.on('child_added', (data) => this.handleProjects('added', data.key, data.val()));
@@ -46,11 +46,11 @@ export default class Projects extends React.Component {
 
         // Add or remove notification from component tracking
         if (event === 'added' || event === 'changed') {
-            this.projects[projectID] = relation;    
+            this.projects[projectID] = relation;
         } else if (event === 'removed') {
             delete this.projects[projectID];
         }
-        
+
         var newProjects = [];
         for (var id in this.projects) {
             newProjects.push(
@@ -58,7 +58,7 @@ export default class Projects extends React.Component {
             )
         }
 
-        // To stop a re-render if component has been unmounted 
+        // To stop a re-render if component has been unmounted
         if (this._isMounted) this.setState({projects : newProjects});
     }
 
@@ -81,6 +81,12 @@ export default class Projects extends React.Component {
 
         var projectRef = firebase.database().ref('projects').push(projectData);
 
+        //set up default statuses
+        firebase.createStatusProject('To Do',1,false,projectRef.key);
+        firebase.createStatusProject('In Progress',2,false,projectRef.key);
+        firebase.createStatusProject('Code Review',3,false,projectRef.key);
+        firebase.createStatusProject('Done',4,true,projectRef.key);
+
         firebase.database().ref('users/'+userID+'/projects/'+projectRef.key).set(userData);
 
         this.setState({newProjectName : ''});
@@ -95,7 +101,7 @@ export default class Projects extends React.Component {
         return (
             <Panel class='user-projects-panel' header='Projects'>
                 {this.state.projects}
-                
+
                 <div>
                     <input
                         onChange={(e) => this.setState({newProjectName : e.target.value})}
