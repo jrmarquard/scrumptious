@@ -39,6 +39,7 @@ public class Ticket implements Parcelable {
     public static final Parcelable.Creator<Ticket> CREATOR = new Parcelable.Creator<Ticket>() {
         public Ticket createFromParcel(Parcel in) {
             Ticket ticket = new Ticket();
+            ticket.setRefId(in.readString());
             ticket.setTitle(in.readString());
             ticket.setDescription(in.readString());
             ticket.setAssignee(in.readString());
@@ -59,6 +60,7 @@ public class Ticket implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mRefId);
         parcel.writeString(mTitle);
         parcel.writeString(mDescription);
         parcel.writeString(mAssignee);

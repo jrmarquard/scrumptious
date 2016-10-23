@@ -2,7 +2,7 @@ package us.crumptio.scrumptious;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import us.crumptio.scrumptious.model.Ticket;
 import us.crumptio.scrumptious.sprint.TicketsFragment;
@@ -10,7 +10,7 @@ import us.crumptio.scrumptious.sprint.TicketsFragment;
 /**
  * Created by josh on 2/10/2016.
  */
-public class ScrumBoardAdapter extends FragmentPagerAdapter {
+public class ScrumBoardAdapter extends FragmentStatePagerAdapter {
 
     private String mProjectId;
 

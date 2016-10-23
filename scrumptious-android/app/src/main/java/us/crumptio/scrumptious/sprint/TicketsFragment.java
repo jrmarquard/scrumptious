@@ -26,8 +26,6 @@ import us.crumptio.scrumptious.repositories.FirebaseTicketsRepository;
 import us.crumptio.scrumptious.repositories.TicketsRepository;
 import us.crumptio.scrumptious.view.TicketView;
 
-import static java.security.AccessController.getContext;
-
 /**
  * Created by josh on 2/10/2016.
  */
@@ -76,7 +74,6 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
         }
 
         mTickets = new ArrayList<>();
-        mTicketsRepo.getTickets(mProjectId, mStatus, this);
     }
 
     @Nullable
@@ -107,11 +104,6 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
                 break;
         }
 
-        List<Ticket> tickets = new ArrayList<>();
-        tickets.add(Ticket.newInstance());
-        tickets.add(Ticket.newInstance());
-        tickets.add(Ticket.newInstance());
-        tickets.add(Ticket.newInstance());
         mList.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = SmartAdapter.empty()
                 .map(Ticket.class, TicketView.class)
@@ -124,6 +116,12 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
                     }
                 })
                 .into(mList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTicketsRepo.getTickets(mProjectId, mStatus, this);
     }
 
     @Override

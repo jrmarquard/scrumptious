@@ -48,12 +48,16 @@ public class SprintFragment extends Fragment {
         int padding = (int) UiUtils.dpToPixels(32, getResources());
         mViewPager.setPadding(padding, 0, padding, 0);
         mViewPager.setClipToPadding(false);
+    }
 
-        mProjectsRepo.getDefaultProject(new ProjectsRepository.OnProjectRetrievedCallback() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        mProjectsRepo.getDefaultProject(getContext(), new ProjectsRepository.OnProjectRetrievedCallback() {
             @Override
             public void onProjectRetrieved(String projectId) {
                 mProjectId = projectId;
-                mViewPager.setAdapter(new ScrumBoardAdapter(getFragmentManager(), projectId));
+                mViewPager.setAdapter(new ScrumBoardAdapter(getChildFragmentManager(), projectId));
             }
         });
     }

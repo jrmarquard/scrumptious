@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import us.crumptio.scrumptious.login.LoginActivity;
 import us.crumptio.scrumptious.myprojects.MyProjectsFragment;
 import us.crumptio.scrumptious.sprint.SprintFragment;
+import us.crumptio.scrumptious.util.SharedPreferencesUtil;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -110,7 +111,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_my_projects:
-                showFragment(new MyProjectsFragment(), SECTION_MY_PROJECTS, true);
+                MyProjectsFragment fragment = new MyProjectsFragment();
+                fragment.setOnProjectSelectedCallback(new MyProjectsFragment.OnProjectSelectedCallback() {
+                    @Override
+                    public void onProjectSelected(String projectId) {
+                        SharedPreferencesUtil.putString(getApplicationContext(),
+                                SharedPreferencesUtil.KEY_DEFAULT_PROJECT_ID, projectId);
+                        onBackPressed();
+                    }
+                });
+                showFragment(fragment, SECTION_MY_PROJECTS, true);
                 break;
             case R.id.nav_sprint:
                 showFragment(new SprintFragment(), SECTION_SPRINT, true);
