@@ -17,8 +17,8 @@ import butterknife.OnClick;
 import us.crumptio.scrumptious.BaseActivity;
 import us.crumptio.scrumptious.R;
 import us.crumptio.scrumptious.model.Ticket;
-import us.crumptio.scrumptious.repositories.FirebaseTicketsRepository;
 import us.crumptio.scrumptious.repositories.TicketsRepository;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 
 /**
  * Created by josh on 12/10/2016.
@@ -45,8 +45,6 @@ public class CreateTicketActivity extends BaseActivity {
 
     @BindView(R.id.btn_create_ticket)
     Button mCreateTicket;
-
-    private TicketsRepository mTicketsRepo = new FirebaseTicketsRepository();
 
     private String mProjectId = null;
     private Ticket mTicket;
@@ -135,14 +133,14 @@ public class CreateTicketActivity extends BaseActivity {
                 break;
         }
         if (!TextUtils.isEmpty(mTicket.getRefId())) {
-            mTicketsRepo.updateTicket(mProjectId, mTicket, new TicketsRepository.OnTicketCreatedCallback() {
+            FirebaseUtil.tickets.updateTicket(mProjectId, mTicket, new TicketsRepository.OnTicketCreatedCallback() {
                 @Override
                 public void onTicketCreated(String ticketId) {
                     finish();
                 }
             });
         } else {
-            mTicketsRepo.createTicket(mProjectId, mTicket, new TicketsRepository.OnTicketCreatedCallback() {
+            FirebaseUtil.tickets.createTicket(mProjectId, mTicket, new TicketsRepository.OnTicketCreatedCallback() {
                 @Override
                 public void onTicketCreated(String ticketId) {
                     finish();

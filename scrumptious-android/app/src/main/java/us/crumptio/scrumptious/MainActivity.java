@@ -20,9 +20,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import us.crumptio.scrumptious.backlog.BacklogFragment;
 import us.crumptio.scrumptious.login.LoginActivity;
 import us.crumptio.scrumptious.myprojects.MyProjectsFragment;
 import us.crumptio.scrumptious.sprint.SprintFragment;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 import us.crumptio.scrumptious.util.SharedPreferencesUtil;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +67,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         mNavView.setNavigationItemSelectedListener(this);
         mNavView.getMenu().getItem(1).setChecked(true);
+
+        // Prefetch project list
+        FirebaseUtil.projects.getProjects(null);
     }
 
     @Override
@@ -123,13 +128,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 showFragment(fragment, SECTION_MY_PROJECTS, true);
                 break;
             case R.id.nav_sprint:
-                showFragment(new SprintFragment(), SECTION_SPRINT, true);
+                showFragment(new SprintFragment(), SECTION_SPRINT, false);
                 break;
             case R.id.nav_backlog:
-                showFragment(new MyProjectsFragment(), SECTION_BACKLOG, true);
+                showFragment(new BacklogFragment(), SECTION_BACKLOG, false);
                 break;
             case R.id.nav_project_settings:
-                showFragment(new MyProjectsFragment(), SECTION_PROJECT_SETTINGS, true);
+                showFragment(new MyProjectsFragment(), SECTION_PROJECT_SETTINGS, false);
                 break;
             default:
                 return false;

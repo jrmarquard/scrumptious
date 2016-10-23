@@ -17,8 +17,8 @@ import us.crumptio.scrumptious.ScrumBoardAdapter;
 import us.crumptio.scrumptious.UiUtils;
 import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.model.Project;
-import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
 import us.crumptio.scrumptious.repositories.ProjectsRepository;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 
 /**
  * Created by josh on 22/10/2016.
@@ -27,8 +27,6 @@ import us.crumptio.scrumptious.repositories.ProjectsRepository;
 public class SprintFragment extends Fragment {
 
     private static final String TAG = SprintFragment.class.getSimpleName();
-
-    private ProjectsRepository mProjectsRepo = new FirebaseProjectsRepository();
 
     private String mProjectId;
 
@@ -55,7 +53,7 @@ public class SprintFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mProjectsRepo.getDefaultProject(getContext(), new ProjectsRepository.OnProjectRetrievedCallback() {
+        FirebaseUtil.projects.getDefaultProject(getContext(), new ProjectsRepository.OnProjectRetrievedCallback() {
             @Override
             public void onProjectRetrieved(Project project) {
                 mProjectId = project.getRefId();

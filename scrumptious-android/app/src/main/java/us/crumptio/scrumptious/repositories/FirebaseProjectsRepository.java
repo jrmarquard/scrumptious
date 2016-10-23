@@ -9,9 +9,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import us.crumptio.scrumptious.model.Project;
+import us.crumptio.scrumptious.model.Ticket;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 import us.crumptio.scrumptious.util.SharedPreferencesUtil;
 
 /**
@@ -19,9 +22,14 @@ import us.crumptio.scrumptious.util.SharedPreferencesUtil;
  */
 public class FirebaseProjectsRepository extends BaseRepository implements ProjectsRepository {
 
+    private Map<String, Project> mProjects = new HashMap<>();
+
     @Override
     public void getProjects(final OnProjectsRetrievedCallback callback) {
-        final List<Project> projects = new ArrayList<>();
+        if (!mProjects.values().isEmpty()) {
+            if (callback != null) callback.onProjectsRetrieved(new ArrayList<>(mProjects.values()));
+        }
+
         mDatabase.getReference("users").child(mAuth.getCurrentUser().getUid())
                 .child("projects")
                 .addChildEventListener(new ChildEventListener() {
@@ -31,20 +39,31 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
                         getProjectDetails(dataSnapshot.getKey(), project.role, new OnProjectRetrievedCallback() {
                             @Override
                             public void onProjectRetrieved(Project project) {
-                                projects.add(project);
-                                callback.onProjectsRetrieved(projects);
+                                mProjects.put(project.getRefId(), project);
+                                if (callback != null)
+                                    callback.onProjectsRetrieved(new ArrayList<>(mProjects.values()));
                             }
                         });
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                        UserProject project = dataSnapshot.getValue(UserProject.class);
+                        getProjectDetails(dataSnapshot.getKey(), project.role, new OnProjectRetrievedCallback() {
+                            @Override
+                            public void onProjectRetrieved(Project project) {
+                                mProjects.put(project.getRefId(), project);
+                                if (callback != null)
+                                    callback.onProjectsRetrieved(new ArrayList<>(mProjects.values()));
+                            }
+                        });
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                        mProjects.remove(dataSnapshot.getKey());
+                        if (callback != null)
+                            callback.onProjectsRetrieved(new ArrayList<>(mProjects.values()));
                     }
 
                     @Override
@@ -67,7 +86,11 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
                         Project project = dataSnapshot.getValue(Project.class);
                         project.setRefId(dataSnapshot.getKey());
                         project.setRole(role);
-                        callback.onProjectRetrieved(project);
+                        if (callback != null) callback.onProjectRetrieved(project);
+
+                        // Prefetch backlog and sprint tickets
+                        FirebaseUtil.tickets.getTickets(project.getRefId(), Ticket.Sprint.BACKLOG, null);
+                        FirebaseUtil.tickets.getTickets(project.getRefId(), Ticket.Sprint.CURRENT, null);
                     }
 
                     @Override
@@ -97,7 +120,7 @@ public class FirebaseProjectsRepository extends BaseRepository implements Projec
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callback.onProjectRetrieved(null);
+                if (callback != null) callback.onProjectRetrieved(null);
             }
         });
     }

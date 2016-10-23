@@ -3,6 +3,7 @@ package us.crumptio.scrumptious.myprojects;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,8 +19,8 @@ import io.nlopez.smartadapters.adapters.RecyclerMultiAdapter;
 import io.nlopez.smartadapters.utils.ViewEventListener;
 import us.crumptio.scrumptious.R;
 import us.crumptio.scrumptious.model.Project;
-import us.crumptio.scrumptious.repositories.FirebaseProjectsRepository;
 import us.crumptio.scrumptious.repositories.ProjectsRepository;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 import us.crumptio.scrumptious.view.ProjectListItemView;
 
 /**
@@ -29,8 +30,6 @@ import us.crumptio.scrumptious.view.ProjectListItemView;
 public class MyProjectsFragment extends Fragment {
 
     private static final String TAG = MyProjectsFragment.class.getSimpleName();
-
-    private ProjectsRepository mProjectsRepo = new FirebaseProjectsRepository();
 
     private RecyclerMultiAdapter mAdapter;
     private OnProjectSelectedCallback mCallback;
@@ -63,12 +62,18 @@ public class MyProjectsFragment extends Fragment {
                 })
                 .into(mProjectList);
 
-        mProjectsRepo.getProjects(new ProjectsRepository.OnProjectsRetrievedCallback() {
+        FirebaseUtil.projects.getProjects(new ProjectsRepository.OnProjectsRetrievedCallback() {
             @Override
             public void onProjectsRetrieved(List<Project> projects) {
                 mAdapter.setItems(projects);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Projects");
     }
 
     public void setOnProjectSelectedCallback(OnProjectSelectedCallback callback) {

@@ -23,8 +23,8 @@ import io.nlopez.smartadapters.utils.ViewEventListener;
 import us.crumptio.scrumptious.R;
 import us.crumptio.scrumptious.createticket.CreateTicketActivity;
 import us.crumptio.scrumptious.model.Ticket;
-import us.crumptio.scrumptious.repositories.FirebaseTicketsRepository;
 import us.crumptio.scrumptious.repositories.TicketsRepository;
+import us.crumptio.scrumptious.util.FirebaseUtil;
 import us.crumptio.scrumptious.view.TicketView;
 
 /**
@@ -38,8 +38,6 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     private static final String SIS_TICKETS = "sis_tickets";
 
     private static final String TAG = TicketsFragment.class.getSimpleName();
-
-    private TicketsRepository mTicketsRepo = new FirebaseTicketsRepository();
 
     @BindView(R.id.status_title)
     RobotoTextView mTitle;
@@ -128,7 +126,7 @@ public class TicketsFragment extends Fragment implements TicketsRepository.OnTic
     @Override
     public void onResume() {
         super.onResume();
-        mTicketsRepo.getTickets(mProjectId, mStatus, Ticket.Sprint.CURRENT, this);
+        FirebaseUtil.tickets.getTickets(mProjectId, mStatus, Ticket.Sprint.CURRENT, this);
     }
 
     @Override
