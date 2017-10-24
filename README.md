@@ -1,4 +1,10 @@
-# COMP4920 Project - Scrumptious
+# COMP4920 Group Project
+
+## Post-project Notes
+- This is no longer developed and kept up solely for archiving
+- Languages/Tools used: javascript, nodejs, react, firebase
+
+---
 
 ## Links
 - [GitHub project (this project)](https://github.com/jrmarquard/scrumptious)
