@@ -4,7 +4,7 @@
 - [GitHub project (this project)](https://github.com/jrmarquard/scrumptious)
 - [Firebase Scrumptious console](https://console.firebase.google.com/project/scrumptious-a4bc9)
 - [Slack group](https://scrumptious4920.slack.com)
-- [Deployed site (release)](https://s.crumptio.us/ or https://scrumptious-a4bc9.firebaseapp.com/)
+- [Deployed site (release)](https://scrumptious-a4bc9.firebaseapp.com/)
 
 ## Setting up the project (Web App)
 - Clone this repository
